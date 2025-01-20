@@ -5,11 +5,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Финансовый трекер</title>
     <style>
+        /* Переменные для цветов */
+        :root {
+            --background-gradient-light: linear-gradient(135deg, #6a11cb, #2575fc);
+            --background-gradient-dark: linear-gradient(135deg, #4a0d8a, #1a4fb3);
+            --text-color-light: white;
+            --text-color-dark: #e0e0e0;
+            --card-bg-light: rgba(255, 255, 255, 0.1);
+            --card-bg-dark: rgba(0, 0, 0, 0.1);
+            --button-bg-light: #2575fc;
+            --button-bg-dark: #1a4fb3;
+            --button-text-light: white;
+            --button-text-dark: #e0e0e0;
+            --modal-bg-light: white;
+            --modal-bg-dark: #333;
+            --modal-text-light: black;
+            --modal-text-dark: white;
+            --transaction-bg-light: rgba(255, 255, 255, 0.1);
+            --transaction-bg-dark: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Плавный переход для всех элементов */
+        body, .container, .chart-card, .buttons button, .modal-content, .transaction, .stats div {
+            transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+        }
+
+        /* Светлая тема */
+        body.light-theme {
+            background: var(--background-gradient-light);
+            color: var(--text-color-light);
+        }
+
+        body.light-theme .container {
+            background: var(--card-bg-light);
+        }
+
+        body.light-theme .buttons button {
+            background: var(--button-bg-light);
+            color: var(--button-text-light);
+        }
+
+        body.light-theme .modal-content {
+            background: var(--modal-bg-light);
+            color: var(--modal-text-light);
+        }
+
+        body.light-theme .transaction {
+            background: var(--transaction-bg-light);
+        }
+
+        body.light-theme .stats div {
+            background: var(--transaction-bg-light);
+        }
+
+        /* Тёмная тема */
+        body.dark-theme {
+            background: var(--background-gradient-dark);
+            color: var(--text-color-dark);
+        }
+
+        body.dark-theme .container {
+            background: var(--card-bg-dark);
+        }
+
+        body.dark-theme .buttons button {
+            background: var(--button-bg-dark);
+            color: var(--button-text-dark);
+        }
+
+        body.dark-theme .modal-content {
+            background: var(--modal-bg-dark);
+            color: var(--modal-text-dark);
+        }
+
+        body.dark-theme .transaction {
+            background: var(--transaction-bg-dark);
+        }
+
+        body.dark-theme .stats div {
+            background: var(--transaction-bg-dark);
+        }
+
+        /* Кнопка переключения темы */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--button-bg-light);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background 0.5s ease, transform 0.5s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-toggle svg {
+            width: 24px;
+            height: 24px;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .theme-toggle .sun {
+            position: absolute;
+            opacity: 1;
+            transform: rotate(0deg);
+        }
+
+        .theme-toggle .moon {
+            position: absolute;
+            opacity: 0;
+            transform: rotate(-90deg);
+        }
+
+        body.dark-theme .theme-toggle .sun {
+            opacity: 0;
+            transform: rotate(90deg);
+        }
+
+        body.dark-theme .theme-toggle .moon {
+            opacity: 1;
+            transform: rotate(0deg);
+        }
+
+        /* Остальные стили */
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -29,7 +160,6 @@
             width: 90%;
             max-width: 1200px;
             text-align: center;
-            background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -76,14 +206,11 @@
             padding: 10px 20px;
             border: none;
             border-radius: 25px;
-            background: #2575fc;
-            color: white;
             cursor: pointer;
             transition: background 0.3s ease, transform 0.3s ease;
         }
 
         .buttons button:hover {
-            background: #6a11cb;
             transform: scale(1.1);
         }
 
@@ -106,10 +233,8 @@
         }
 
         .modal-content {
-            background: white;
             padding: 20px;
             border-radius: 10px;
-            color: black;
             width: 300px;
             text-align: center;
             position: relative;
@@ -129,11 +254,6 @@
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            color: #333;
-        }
-
-        .close-modal:hover {
-            color: #000;
         }
 
         .modal-content input, .modal-content select, .modal-content button {
@@ -145,28 +265,20 @@
         }
 
         .modal-content button {
-            background: #2575fc;
-            color: white;
             cursor: pointer;
             transition: background 0.3s ease;
-        }
-
-        .modal-content button:hover {
-            background: #6a11cb;
         }
 
         .transactions {
             margin-top: 20px;
             max-height: 200px;
             overflow-y: auto;
-            background: rgba(255, 255, 255, 0.2);
             padding: 15px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .transaction {
-            background: rgba(255, 255, 255, 0.1);
             padding: 10px;
             border-radius: 5px;
             margin: 5px 0;
@@ -181,7 +293,6 @@
         }
 
         .transaction button {
-            background: #ff4d4d;
             border: none;
             color: white;
             padding: 5px 10px;
@@ -215,7 +326,6 @@
         }
 
         .stats div {
-            background: rgba(255, 255, 255, 0.1);
             padding: 10px;
             border-radius: 10px;
             width: 45%;
@@ -236,15 +346,12 @@
             padding: 10px 20px;
             border: none;
             border-radius: 25px;
-            background: #2575fc;
-            color: white;
             cursor: pointer;
             transition: background 0.3s ease, transform 0.3s ease;
             margin: 5px;
         }
 
         .interval-selector button:hover {
-            background: #6a11cb;
             transform: scale(1.1);
         }
 
@@ -256,13 +363,7 @@
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
-            background: #2575fc;
-            color: white;
             cursor: pointer;
-        }
-
-        .sort-options select:hover {
-            background: #6a11cb;
         }
 
         @media (max-width: 768px) {
@@ -281,7 +382,25 @@
         }
     </style>
 </head>
-<body>
+<body class="light-theme">
+    <!-- Кнопка переключения темы -->
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5" fill="currentColor" />
+            <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" />
+            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" />
+            <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" />
+            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" />
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" />
+        </svg>
+    </button>
+
     <div class="container">
         <div class="chart-card">
             <div class="chart-container">
@@ -575,6 +694,25 @@
             return `${date.toLocaleDateString()} (${days[date.getDay()]})`;
         }
 
+        function toggleTheme() {
+            const body = document.body;
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function applySavedTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.classList.add(savedTheme + '-theme');
+        }
+
+        applySavedTheme();
         updateChart();
         updateBalance();
         updateTransactions();
