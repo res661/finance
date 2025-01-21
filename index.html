@@ -380,6 +380,93 @@
                 width: 100%;
             }
         }
+
+        /* Стили для калькулятора */
+        .calculator-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin: 0 auto;
+            width: 90%;
+            max-width: 400px;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .calculator-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .calculator-display {
+            width: 100%;
+            height: 60px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 10px;
+            font-size: 2rem;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculator-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .calculator-buttons button {
+            padding: 20px;
+            border: none;
+            border-radius: 10px;
+            background: #f0f0f0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .calculator-buttons button:hover {
+            background: #ddd;
+            transform: scale(1.05);
+        }
+
+        .calculator-buttons .operator {
+            background: #2575fc;
+            color: white;
+        }
+
+        .calculator-buttons .operator:hover {
+            background: #1a4fb3;
+        }
+
+        .calculator-buttons .equals {
+            background: #4caf50;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .calculator-buttons .equals:hover {
+            background: #388e3c;
+        }
+
+        .calculator-buttons .zero {
+            grid-column: span 2;
+        }
+
+        .fade-in {
+            opacity: 1;
+            display: block;
+        }
+
+        .fade-out {
+            opacity: 0;
+            display: none;
+        }
     </style>
 </head>
 <body class="light-theme">
@@ -402,9 +489,33 @@
     </button>
 
     <div class="container">
-        <div class="chart-card">
+        <div class="chart-card" id="chartCard">
             <div class="chart-container">
                 <canvas id="myChart"></canvas>
+            </div>
+        </div>
+        <div class="calculator-card" id="calculatorCard">
+            <div class="calculator-container">
+                <div class="calculator-display" id="calculatorDisplay">0</div>
+                <div class="calculator-buttons">
+                    <button onclick="clearDisplay()">C</button>
+                    <button onclick="appendToDisplay('/')">/</button>
+                    <button onclick="appendToDisplay('*')">*</button>
+                    <button onclick="appendToDisplay('-')">-</button>
+                    <button onclick="appendToDisplay('7')">7</button>
+                    <button onclick="appendToDisplay('8')">8</button>
+                    <button onclick="appendToDisplay('9')">9</button>
+                    <button onclick="appendToDisplay('+')" class="operator">+</button>
+                    <button onclick="appendToDisplay('4')">4</button>
+                    <button onclick="appendToDisplay('5')">5</button>
+                    <button onclick="appendToDisplay('6')">6</button>
+                    <button onclick="appendToDisplay('1')">1</button>
+                    <button onclick="appendToDisplay('2')">2</button>
+                    <button onclick="appendToDisplay('3')">3</button>
+                    <button onclick="calculateResult()" class="equals">=</button>
+                    <button onclick="appendToDisplay('0')" class="zero">0</button>
+                    <button onclick="appendToDisplay('.')">.</button>
+                </div>
             </div>
         </div>
         <div class="balance" id="balance">Баланс: $0.00</div>
@@ -412,6 +523,8 @@
             <button onclick="openModal()">Добавить транзакцию</button>
             <button onclick="confirmClearData()">Очистить данные</button>
             <button onclick="downloadData()">Скачать данные</button>
+            <button onclick="downloadTXT()">Скачать TXT</button>
+            <button onclick="toggleView()" id="toggleViewButton">Переключить на калькулятор</button>
         </div>
         <div class="interval-selector">
             <button onclick="setInterval('week')">Неделя</button>
@@ -476,6 +589,7 @@
         let balance = parseFloat(localStorage.getItem('balance')) || 0;
         let currentInterval = 'all';
         let editingIndex = null;
+        let isCalculatorVisible = false;
 
         const ctx = document.getElementById('myChart').getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
@@ -657,6 +771,19 @@
             URL.revokeObjectURL(url);
         }
 
+        function downloadTXT() {
+            const txtContent = transactions.map(t => 
+                `Тип: ${t.type}\nСумма: ${t.amount}\nОписание: ${t.description}\nДата: ${t.date}\nТема: ${t.theme || ''}\nЦена покупки: ${t.purchasePrice || ''}\nЦена продажи: ${t.salePrice || ''}\nКомиссия: ${t.commission || ''}\n\n`
+            ).join('');
+            const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'transactions.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
         function sortTransactions(sortType) {
             switch (sortType) {
                 case 'dateDesc':
@@ -731,6 +858,50 @@
         function applySavedTheme() {
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.body.classList.add(savedTheme + '-theme');
+        }
+
+        function toggleView() {
+            const chartCard = document.getElementById('chartCard');
+            const calculatorCard = document.getElementById('calculatorCard');
+            const toggleButton = document.getElementById('toggleViewButton');
+
+            if (isCalculatorVisible) {
+                chartCard.classList.remove('fade-out');
+                chartCard.classList.add('fade-in');
+                calculatorCard.classList.remove('fade-in');
+                calculatorCard.classList.add('fade-out');
+                toggleButton.innerText = 'Переключить на калькулятор';
+            } else {
+                chartCard.classList.remove('fade-in');
+                chartCard.classList.add('fade-out');
+                calculatorCard.classList.remove('fade-out');
+                calculatorCard.classList.add('fade-in');
+                toggleButton.innerText = 'Переключить на график';
+            }
+
+            isCalculatorVisible = !isCalculatorVisible;
+        }
+
+        function appendToDisplay(value) {
+            const display = document.getElementById('calculatorDisplay');
+            if (display.innerText === '0' && value !== '.') {
+                display.innerText = value;
+            } else {
+                display.innerText += value;
+            }
+        }
+
+        function clearDisplay() {
+            document.getElementById('calculatorDisplay').innerText = '0';
+        }
+
+        function calculateResult() {
+            const display = document.getElementById('calculatorDisplay');
+            try {
+                display.innerText = eval(display.innerText);
+            } catch (e) {
+                display.innerText = 'Ошибка';
+            }
         }
 
         applySavedTheme();
