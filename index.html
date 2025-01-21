@@ -410,7 +410,7 @@
         <div class="balance" id="balance">Баланс: $0.00</div>
         <div class="buttons">
             <button onclick="openModal()">Добавить транзакцию</button>
-            <button onclick="clearData()">Очистить данные</button>
+            <button onclick="confirmClearData()">Очистить данные</button>
             <button onclick="downloadData()">Скачать данные</button>
         </div>
         <div class="interval-selector">
@@ -455,6 +455,18 @@
                 <option value="15">15%</option>
             </select>
             <button onclick="saveTransaction()">Сохранить</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно подтверждения очистки данных -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <h2>Вы уверены?</h2>
+            <p>Все данные будут удалены без возможности восстановления.</p>
+            <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+                <button onclick="clearDataConfirmed()" style="background: #ff4d4d;">Да</button>
+                <button onclick="closeConfirmModal()" style="background: #ccc;">Нет</button>
+            </div>
         </div>
     </div>
 
@@ -614,7 +626,11 @@
             }, 300);
         }
 
-        function clearData() {
+        function confirmClearData() {
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function clearDataConfirmed() {
             transactions = [];
             balance = 0;
             localStorage.removeItem('transactions');
@@ -623,6 +639,11 @@
             updateBalance();
             updateTransactions();
             updateStats();
+            closeConfirmModal();
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
         }
 
         function downloadData() {
