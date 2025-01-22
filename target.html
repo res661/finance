@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои цели</title>
+    <style>
+        /* Общие стили из главной страницы */
+        :root {
+            --background-gradient-light: linear-gradient(135deg, #6a11cb, #2575fc);
+            --background-gradient-dark: linear-gradient(135deg, #4a0d8a, #1a4fb3);
+            --text-color-light: white;
+            --text-color-dark: #e0e0e0;
+            --card-bg-light: rgba(255, 255, 255, 0.1);
+            --card-bg-dark: rgba(0, 0, 0, 0.1);
+            --button-bg-light: #2575fc;
+            --button-bg-dark: #1a4fb3;
+            --button-text-light: white;
+            --button-text-dark: #e0e0e0;
+            --modal-bg-light: white;
+            --modal-bg-dark: #333;
+            --modal-text-light: black;
+            --modal-text-dark: white;
+            --error-color: #ff4444;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            animation: gradientAnimation 10s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 80px;
+        }
+
+        /* Стили для карточек целей */
+        .goal-card {
+            background: var(--card-bg-light);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            position: relative;
+        }
+
+        .goal-card.completed {
+            opacity: 0.7;
+        }
+
+        .goal-card.completed .progress-bar {
+            background: #4CAF50;
+        }
+
+        .goal-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .goal-controls button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Прогресс-бар */
+        .progress-container {
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--button-bg-light);
+            transition: width 0.5s ease, background 0.3s ease;
+        }
+
+        .goal-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        /* Фильтры и поиск */
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filters input, .filters select {
+            padding: 10px 15px;
+            border-radius: 25px;
+            border: none;
+            background: var(--card-bg-light);
+            color: inherit;
+            min-width: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .filters input:focus, .filters select:focus {
+            outline: 2px solid var(--button-bg-light);
+        }
+
+        /* Кнопки */
+        .add-goal-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: var(--button-bg-light);
+            color: var(--button-text-light);
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .add-goal-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        /* Кнопка "Назад на главную" */
+        .back-home-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-home-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-form input, .modal-form textarea, .modal-form select {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.8em;
+            display: none;
+        }
+
+        /* Темы */
+        body.light-theme {
+            background: var(--background-gradient-light);
+            color: var(--text-color-light);
+        }
+
+        body.dark-theme {
+            background: var(--background-gradient-dark);
+            color: var(--text-color-dark);
+        }
+
+        body.dark-theme .goal-card {
+            background: var(--card-bg-dark);
+        }
+
+        body.dark-theme .progress-bar {
+            background: var(--button-bg-dark);
+        }
+
+        body.dark-theme .modal-content {
+            background: var(--modal-bg-dark);
+            color: var(--modal-text-dark);
+        }
+
+        body.light-theme .modal-content {
+            background: var(--modal-bg-light);
+            color: var(--modal-text-light);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 10px;
+                margin-top: 60px;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+            
+            .goal-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <button class="back-home-btn" onclick="window.location.href = '/'">Назад на главную</button>
+    
+    <div class="container">
+        <div class="filters">
+            <input type="text" id="searchInput" placeholder="Поиск по названию">
+            <select id="statusFilter">
+                <option value="all">Все цели</option>
+                <option value="active">Активные</option>
+                <option value="completed">Завершенные</option>
+            </select>
+        </div>
+
+        <div class="goals-list" id="goalsList"></div>
+    </div>
+
+    <button class="add-goal-btn" id="addGoalBtn">+</button>
+
+    <div class="modal" id="goalModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModalBtn">&times;</button>
+            <h2 id="modalTitle">Новая цель</h2>
+            <form class="modal-form" id="goalForm">
+                <div>
+                    <input type="text" id="goalTitle" placeholder="Название цели" required>
+                    <div class="error-message" id="titleError"></div>
+                </div>
+                <div>
+                    <input type="number" id="goalTarget" placeholder="Целевая сумма" min="1" required>
+                    <div class="error-message" id="targetError"></div>
+                </div>
+                <div>
+                    <input type="number" id="goalCurrent" placeholder="Текущий прогресс" min="0">
+                    <div class="error-message" id="currentError"></div>
+                </div>
+                <div>
+                    <input type="date" id="goalDueDate" min="">
+                    <div class="error-message" id="dateError"></div>
+                </div>
+                <div>
+                    <textarea id="goalDescription" placeholder="Описание цели"></textarea>
+                </div>
+                <button type="submit">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let goals = JSON.parse(localStorage.getItem('goals')) || [];
+        let editingId = null;
+
+        // Инициализация даты
+        document.getElementById('goalDueDate').min = new Date().toISOString().split('T')[0];
+
+        // Открытие модального окна
+        document.getElementById('addGoalBtn').addEventListener('click', () => {
+            editingId = null;
+            document.getElementById('modalTitle').textContent = 'Новая цель';
+            resetForm();
+            showModal();
+        });
+
+        // Закрытие модального окна
+        document.getElementById('closeModalBtn').addEventListener('click', hideModal);
+        window.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('goalModal')) hideModal();
+        });
+
+        // Обработка формы
+        document.getElementById('goalForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            handleFormSubmit();
+        });
+
+        // Функции работы с целями
+        function saveGoal(goalData) {
+            const validation = validateForm(goalData);
+            if (!validation.valid) {
+                showErrors(validation.errors);
+                return;
+            }
+
+            const goal = {
+                id: editingId || Date.now(),
+                title: goalData.title,
+                target: parseFloat(goalData.target),
+                current: parseFloat(goalData.current) || 0,
+                dueDate: goalData.dueDate,
+                description: goalData.description,
+                created: new Date().toISOString(),
+                completed: false
+            };
+
+            if (editingId) {
+                const index = goals.findIndex(g => g.id === editingId);
+                goals[index] = goal;
+            } else {
+                goals.push(goal);
+            }
+
+            localStorage.setItem('goals', JSON.stringify(goals));
+            hideModal();
+            renderGoals();
+        }
+
+        function deleteGoal(id) {
+            goals = goals.filter(goal => goal.id !== id);
+            localStorage.setItem('goals', JSON.stringify(goals));
+            renderGoals();
+        }
+
+        function toggleComplete(id) {
+            const index = goals.findIndex(g => g.id === id);
+            goals[index].completed = !goals[index].completed;
+            localStorage.setItem('goals', JSON.stringify(goals));
+            renderGoals();
+        }
+
+        // Рендеринг списка целей
+        function renderGoals() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            const filteredGoals = goals.filter(goal => {
+                const matchesSearch = goal.title.toLowerCase().includes(searchQuery);
+                const matchesStatus = statusFilter === 'all' || 
+                                    (statusFilter === 'active' && !goal.completed) ||
+                                    (statusFilter === 'completed' && goal.completed);
+                return matchesSearch && matchesStatus;
+            });
+
+            const goalsList = document.getElementById('goalsList');
+            goalsList.innerHTML = filteredGoals.map(goal => `
+                <div class="goal-card ${goal.completed ? 'completed' : ''}">
+                    <div class="goal-header">
+                        <h3>${goal.title}</h3>
+                        <div class="goal-controls">
+                            <button onclick="editGoal(${goal.id})">✏️</button>
+                            <button onclick="deleteGoal(${goal.id})">🗑️</button>
+                            <button onclick="toggleComplete(${goal.id})">
+                                ${goal.completed ? '❌' : '✅'}
+                            </button>
+                        </div>
+                    </div>
+                    ${goal.description ? `<p>${goal.description}</p>` : ''}
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${(goal.current / goal.target * 100)}%"></div>
+                    </div>
+                    <div class="goal-info">
+                        <span>Прогресс: $${goal.current} из $${goal.target}</span>
+                        ${goal.dueDate ? `<span>Срок: ${new Date(goal.dueDate).toLocaleDateString()}</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Вспомогательные функции
+        function editGoal(id) {
+            const goal = goals.find(g => g.id === id);
+            editingId = id;
+            document.getElementById('modalTitle').textContent = 'Редактировать цель';
+            document.getElementById('goalTitle').value = goal.title;
+            document.getElementById('goalTarget').value = goal.target;
+            document.getElementById('goalCurrent').value = goal.current;
+            document.getElementById('goalDueDate').value = goal.dueDate;
+            document.getElementById('goalDescription').value = goal.description;
+            showModal();
+        }
+
+        function validateForm(data) {
+            const errors = {};
+            if (!data.title.trim()) errors.title = 'Введите название цели';
+            if (!data.target || data.target < 1) errors.target = 'Некорректная сумма';
+            if (data.current < 0) errors.current = 'Прогресс не может быть отрицательным';
+            if (data.dueDate && new Date(data.dueDate) < new Date()) errors.date = 'Некорректная дата';
+            return { valid: Object.keys(errors).length === 0, errors };
+        }
+
+        function showErrors(errors) {
+            document.getElementById('titleError').textContent = errors.title || '';
+            document.getElementById('targetError').textContent = errors.target || '';
+            document.getElementById('currentError').textContent = errors.current || '';
+            document.getElementById('dateError').textContent = errors.date || '';
+        }
+
+        function resetForm() {
+            document.getElementById('goalForm').reset();
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+        }
+
+        function showModal() {
+            document.getElementById('goalModal').style.display = 'flex';
+        }
+
+        function hideModal() {
+            document.getElementById('goalModal').style.display = 'none';
+        }
+
+        function handleFormSubmit() {
+            const formData = {
+                title: document.getElementById('goalTitle').value,
+                target: document.getElementById('goalTarget').value,
+                current: document.getElementById('goalCurrent').value,
+                dueDate: document.getElementById('goalDueDate').value,
+                description: document.getElementById('goalDescription').value
+            };
+            saveGoal(formData);
+        }
+
+        // Инициализация
+        document.getElementById('searchInput').addEventListener('input', renderGoals);
+        document.getElementById('statusFilter').addEventListener('change', renderGoals);
+        renderGoals();
+
+        // Переключение темы
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            document.body.classList.toggle('light-theme');
+            localStorage.setItem('theme', 
+                document.body.classList.contains('dark-theme') ? 'dark' : 'light'
+            );
+        }
+
+        // Применение сохраненной темы
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.classList.add(savedTheme + '-theme');
+    </script>
+</body>
+</html>
