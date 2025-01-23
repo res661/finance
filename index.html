@@ -23,14 +23,18 @@
             --modal-text-dark: white;
             --transaction-bg-light: rgba(255, 255, 255, 0.1);
             --transaction-bg-dark: rgba(0, 0, 0, 0.1);
+            --calendar-bg: #f0f0f0;
+            --calendar-text: #333;
+            --calendar-weekday-text: #444;
+            --positive-color: green;
+            --negative-color: red;
+            --no-transaction-bg: #f0f0f0;
         }
 
-        /* Плавный переход для всех элементов */
         body, .container, .chart-card, .buttons button, .modal-content, .transaction, .stats div {
             transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
         }
 
-        /* Светлая тема */
         body.light-theme {
             background: var(--background-gradient-light);
             color: var(--text-color-light);
@@ -58,7 +62,6 @@
             background: var(--transaction-bg-light);
         }
 
-        /* Тёмная тема */
         body.dark-theme {
             background: var(--background-gradient-dark);
             color: var(--text-color-dark);
@@ -86,7 +89,6 @@
             background: var(--transaction-bg-dark);
         }
 
-        /* Кнопка переключения темы */
         .theme-toggle {
             position: fixed;
             top: 20px;
@@ -137,7 +139,6 @@
             transform: rotate(0deg);
         }
 
-        /* Стили бургер-кнопки */
         .burger-btn {
             position: fixed;
             top: 24px;
@@ -180,7 +181,6 @@
         .burger-line:nth-child(2) { top: 6px; }
         .burger-line:nth-child(3) { top: 12px; }
 
-        /* Анимация при открытии */
         .burger-btn.active .burger-line:nth-child(1) {
             transform: translateY(6px) rotate(45deg);
         }
@@ -193,7 +193,6 @@
             transform: translateY(-6px) rotate(-45deg);
         }
 
-        /* Стили меню */
         .nav-menu {
             position: fixed;
             top: 96px;
@@ -254,7 +253,6 @@
             color: var(--text-color-dark);
         }
 
-        /* Остальные стили */
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -498,81 +496,98 @@
             }
         }
 
-        /* Стили для калькулятора */
-        .calculator-card {
+        .calendar-card {
             background: white;
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             margin: 0 auto;
             width: 90%;
-            max-width: 400px;
+            max-width: 800px;
             display: none;
             opacity: 0;
             transition: opacity 0.5s ease;
         }
 
-        .calculator-container {
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .calendar-header button {
+            background: var(--button-bg-light);
+            color: var(--button-text-light);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .calendar-header button:hover {
+            background: var(--button-bg-dark);
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--calendar-weekday-text);
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .calendar-days div {
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            position: relative;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-        }
-
-        .calculator-display {
-            width: 100%;
-            height: 60px;
-            background: #f0f0f0;
-            border-radius: 10px;
-            display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: flex-end;
-            padding: 0 10px;
-            font-size: 2rem;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            height: 80px;
         }
 
-        .calculator-buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+        .calendar-days div.empty {
+            background: transparent;
+            cursor: default;
         }
 
-        .calculator-buttons button {
-            padding: 20px;
-            border: none;
-            border-radius: 10px;
-            background: #f0f0f0;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.3s ease;
+        .calendar-days div.has-transaction {
+            background: var(--positive-color);
+            color: var(--text-color-light);
         }
 
-        .calculator-buttons button:hover {
-            background: #ddd;
-            transform: scale(1.05);
+        .calendar-days div.has-transaction.negative {
+            background: var(--negative-color);
         }
 
-        .calculator-buttons .operator {
-            background: #2575fc;
-            color: white;
+        .calendar-days div.has-transaction .date {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-color-light);
         }
 
-        .calculator-buttons .operator:hover {
-            background: #1a4fb3;
+        .calendar-days div.has-transaction .amount {
+            font-size: 12px;
+            margin-top: 4px;
+            color: var(--text-color-light);
         }
 
-        .calculator-buttons .equals {
-            background: #4caf50;
-            color: white;
-            grid-column: span 2;
-        }
-
-        .calculator-buttons .equals:hover {
-            background: #388e3c;
-        }
-
-        .calculator-buttons .zero {
-            grid-column: span 2;
+        .calendar-days div.no-transaction {
+            background: var(--no-transaction-bg);
+            color: var(--text-color-dark);
         }
 
         .fade-in {
@@ -628,29 +643,22 @@
                 <canvas id="myChart"></canvas>
             </div>
         </div>
-        <div class="calculator-card" id="calculatorCard">
-            <div class="calculator-container">
-                <div class="calculator-display" id="calculatorDisplay">0</div>
-                <div class="calculator-buttons">
-                    <button onclick="clearDisplay()">C</button>
-                    <button onclick="appendToDisplay('/')">/</button>
-                    <button onclick="appendToDisplay('*')">*</button>
-                    <button onclick="appendToDisplay('-')">-</button>
-                    <button onclick="appendToDisplay('7')">7</button>
-                    <button onclick="appendToDisplay('8')">8</button>
-                    <button onclick="appendToDisplay('9')">9</button>
-                    <button onclick="appendToDisplay('+')" class="operator">+</button>
-                    <button onclick="appendToDisplay('4')">4</button>
-                    <button onclick="appendToDisplay('5')">5</button>
-                    <button onclick="appendToDisplay('6')">6</button>
-                    <button onclick="appendToDisplay('1')">1</button>
-                    <button onclick="appendToDisplay('2')">2</button>
-                    <button onclick="appendToDisplay('3')">3</button>
-                    <button onclick="calculateResult()" class="equals">=</button>
-                    <button onclick="appendToDisplay('0')" class="zero">0</button>
-                    <button onclick="appendToDisplay('.')">.</button>
-                </div>
+        <div class="calendar-card" id="calendarCard">
+            <div class="calendar-header">
+                <button onclick="changeMonth(-1)">&lt;</button>
+                <span id="currentMonthYear"></span>
+                <button onclick="changeMonth(1)">&gt;</button>
             </div>
+            <div class="calendar-weekdays">
+                <div>Пн</div>
+                <div>Вт</div>
+                <div>Ср</div>
+                <div>Чт</div>
+                <div>Пт</div>
+                <div>Сб</div>
+                <div>Вс</div>
+            </div>
+            <div class="calendar-days" id="calendarDays"></div>
         </div>
         <div class="balance" id="balance">Баланс: $0.00</div>
         <div class="buttons">
@@ -658,7 +666,7 @@
             <button onclick="confirmClearData()">Очистить данные</button>
             <button onclick="downloadData()">Скачать данные</button>
             <button onclick="downloadTXT()">Скачать TXT</button>
-            <button onclick="toggleView()" id="toggleViewButton">Переключить на калькулятор</button>
+            <button onclick="toggleView()" id="toggleViewButton">Переключить на календарь</button>
         </div>
         <div class="interval-selector">
             <button onclick="setInterval('week')">Неделя</button>
@@ -705,7 +713,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно подтверждения очистки данных -->
     <div class="modal" id="confirmModal">
         <div class="modal-content">
             <h2>Вы уверены?</h2>
@@ -723,7 +730,7 @@
         let balance = parseFloat(localStorage.getItem('balance')) || 0;
         let currentInterval = 'all';
         let editingIndex = null;
-        let isCalculatorVisible = false;
+        let isCalendarVisible = localStorage.getItem('isCalendarVisible') === 'true' || false;
 
         const ctx = document.getElementById('myChart').getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
@@ -857,6 +864,7 @@
                 updateBalance();
                 updateTransactions();
                 updateStats();
+                updateCalendar();
                 closeModal();
             }
         }
@@ -871,6 +879,7 @@
                 updateBalance();
                 updateTransactions();
                 updateStats();
+                updateCalendar();
             }, 300);
         }
 
@@ -887,6 +896,7 @@
             updateBalance();
             updateTransactions();
             updateStats();
+            updateCalendar();
             closeConfirmModal();
         }
 
@@ -996,49 +1006,84 @@
 
         function toggleView() {
             const chartCard = document.getElementById('chartCard');
-            const calculatorCard = document.getElementById('calculatorCard');
+            const calendarCard = document.getElementById('calendarCard');
             const toggleButton = document.getElementById('toggleViewButton');
 
-            if (isCalculatorVisible) {
+            if (isCalendarVisible) {
                 chartCard.classList.remove('fade-out');
                 chartCard.classList.add('fade-in');
-                calculatorCard.classList.remove('fade-in');
-                calculatorCard.classList.add('fade-out');
-                toggleButton.innerText = 'Переключить на калькулятор';
+                calendarCard.classList.remove('fade-in');
+                calendarCard.classList.add('fade-out');
+                toggleButton.innerText = 'Переключить на календарь';
             } else {
                 chartCard.classList.remove('fade-in');
                 chartCard.classList.add('fade-out');
-                calculatorCard.classList.remove('fade-out');
-                calculatorCard.classList.add('fade-in');
+                calendarCard.classList.remove('fade-out');
+                calendarCard.classList.add('fade-in');
                 toggleButton.innerText = 'Переключить на график';
             }
 
-            isCalculatorVisible = !isCalculatorVisible;
+            isCalendarVisible = !isCalendarVisible;
+            localStorage.setItem('isCalendarVisible', isCalendarVisible);
         }
 
-        function appendToDisplay(value) {
-            const display = document.getElementById('calculatorDisplay');
-            if (display.innerText === '0' && value !== '.') {
-                display.innerText = value;
-            } else {
-                display.innerText += value;
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+
+        function updateCalendar() {
+            const calendarDays = document.getElementById('calendarDays');
+            const currentMonthYear = document.getElementById('currentMonthYear');
+            calendarDays.innerHTML = '';
+
+            currentMonthYear.textContent = `${new Date(currentYear, currentMonth).toLocaleString('ru', { month: 'long' })} ${currentYear}`;
+
+            const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const startingDay = firstDayOfMonth.getDay() === 0 ? 6 : firstDayOfMonth.getDay() - 1;
+
+            for (let i = 0; i < startingDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.classList.add('empty');
+                calendarDays.appendChild(emptyDay);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.textContent = day;
+
+                const date = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const transaction = transactions.find(t => t.date === date);
+
+                if (transaction) {
+                    dayElement.classList.add('has-transaction');
+                    if (transaction.amount < 0) {
+                        dayElement.classList.add('negative');
+                    }
+                    dayElement.innerHTML = `
+                        <div class="date">${day}</div>
+                        <div class="amount">${transaction.amount >= 0 ? '+' : '-'}$${Math.abs(transaction.amount).toFixed(2)}</div>
+                    `;
+                } else {
+                    dayElement.classList.add('no-transaction');
+                }
+
+                calendarDays.appendChild(dayElement);
             }
         }
 
-        function clearDisplay() {
-            document.getElementById('calculatorDisplay').innerText = '0';
-        }
-
-        function calculateResult() {
-            const display = document.getElementById('calculatorDisplay');
-            try {
-                display.innerText = eval(display.innerText);
-            } catch (e) {
-                display.innerText = 'Ошибка';
+        function changeMonth(step) {
+            currentMonth += step;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
             }
+            updateCalendar();
         }
 
-        // Управление бургер-меню
         const burgerBtn = document.querySelector('.burger-btn');
         const navMenu = document.querySelector('.nav-menu');
 
@@ -1047,9 +1092,8 @@
             navMenu.classList.toggle('active');
         }
 
-        // Закрытие меню при клике на пункт "Цели"
         document.querySelector('.menu-item a').addEventListener('click', function() {
-            toggleMenu(); // Закрыть меню
+            toggleMenu();
         });
 
         document.addEventListener('click', (e) => {
@@ -1064,6 +1108,10 @@
         updateBalance();
         updateTransactions();
         updateStats();
+        updateCalendar();
+        if (isCalendarVisible) {
+            toggleView();
+        }
     </script>
 </body>
 </html>
