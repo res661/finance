@@ -6,6 +6,8 @@
     <title>Neon Finance Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/MorphSVGPlugin.min.js"></script>
     <style>
         :root {
             --bg: #0a0e1a;
@@ -15,6 +17,15 @@
             --positive: #00ff88;
             --negative: #ff467e;
             --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        :root.light-theme {
+            --bg: #f0f4f8;
+            --glass: rgba(0,0,0,0.05);
+            --accent: #0077ff;
+            --text: rgba(0,0,0,0.95);
+            --positive: #00c853;
+            --negative: #ff1744;
         }
 
         * {
@@ -31,6 +42,7 @@
             padding: 2rem;
             overflow-x: hidden;
             position: relative;
+            transition: background-color 0.3s ease;
         }
 
         body::before {
@@ -48,12 +60,8 @@
         }
 
         @keyframes gradientMove {
-            0% {
-                background-position: 0% 0%;
-            }
-            100% {
-                background-position: 100% 100%;
-            }
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
         }
 
         .floating-particle {
@@ -99,12 +107,8 @@
         }
 
         @keyframes rotateGradient {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .chart-container {
@@ -115,6 +119,7 @@
             position: relative;
             overflow: hidden;
             grid-column: span 2;
+            transition: opacity 0.3s ease-in-out;
         }
 
         .transactions-list {
@@ -416,9 +421,161 @@
             0% { transform: translateY(100vh) rotate(0deg); }
             100% { transform: translateY(-100vh) rotate(360deg); }
         }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0,163,255,0.3);
+        }
+
+        .theme-toggle svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text);
+        }
+
+        .calendar-container {
+            display: none;
+            height: 400px;
+            background: var(--glass);
+            border-radius: 24px;
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+            grid-column: span 2;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-nav button {
+            background: var(--glass);
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+
+        .calendar-nav button:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day {
+            background: var(--glass);
+            border-radius: 16px;
+            padding: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .calendar-day:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .calendar-day.today {
+            border: 2px solid var(--accent);
+        }
+
+        .calendar-day .day-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .calendar-day .day-balance {
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+
+        .positive-balance {
+            color: var(--positive);
+        }
+
+        .negative-balance {
+            color: var(--negative);
+        }
+
+        .switch-view {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--glass);
+            border: none;
+            color: var(--text);
+            font-size: 2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            z-index: 10;
+        }
+
+        .switch-view:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .switch-view.left {
+            left: 10px;
+        }
+
+        .switch-view.right {
+            right: 10px;
+        }
     </style>
 </head>
 <body>
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24" id="theme-icon">
+            <path id="moon" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            <circle id="sun" cx="12" cy="12" r="5" style="display:none;"/>
+            <line id="sun-ray-1" x1="12" y1="1" x2="12" y2="3" style="display:none;"/>
+            <line id="sun-ray-2" x1="12" y1="21" x2="12" y2="23" style="display:none;"/>
+            <line id="sun-ray-3" x1="4.22" y1="4.22" x2="5.64" y2="5.64" style="display:none;"/>
+            <line id="sun-ray-4" x1="18.36" y1="18.36" x2="19.78" y2="19.78" style="display:none;"/>
+            <line id="sun-ray-5" x1="1" y1="12" x2="3" y2="12" style="display:none;"/>
+            <line id="sun-ray-6" x1="21" y1="12" x2="23" y2="12" style="display:none;"/>
+            <line id="sun-ray-7" x1="4.22" y1="19.78" x2="5.64" y2="18.36" style="display:none;"/>
+            <line id="sun-ray-8" x1="18.36" y1="5.64" x2="19.78" y2="4.22" style="display:none;"/>
+        </svg>
+    </div>
+
     <div class="nav-bar">
         <ion-icon name="trophy-outline" onclick="window.location.href='target.html'"></ion-icon>
         <ion-icon name="library-outline" onclick="window.location.href='library.html'"></ion-icon>
@@ -453,6 +610,17 @@
             <div class="chart-glow"></div>
             <canvas id="mainChart" class="glow-line"></canvas>
         </div>
+        <button class="switch-view right" onclick="switchToCalendar()">→</button>
+
+        <div class="calendar-container">
+            <div class="calendar-nav">
+                <button onclick="changeMonth(-1)">←</button>
+                <h2 id="currentMonth"></h2>
+                <button onclick="changeMonth(1)">→</button>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+        <button class="switch-view left" onclick="switchToChart()">←</button>
 
         <div class="search-container">
             <input type="date" id="searchDate" class="search-input" onchange="filterTransactions()">
@@ -508,6 +676,7 @@
         let chart;
         let currentPeriod = 'all';
         let lastCalculatedProfit = 0;
+        let currentDate = new Date();
 
         function initChart() {
             const ctx = document.getElementById('mainChart').getContext('2d');
@@ -693,10 +862,9 @@
                 document.getElementById('skinName').value = t.theme;
                 document.getElementById('buyPrice').value = t.buyPrice;
                 document.getElementById('sellPrice').value = t.sellPrice;
-                document.getElementById('profitPercentage').value = t.commission;
+                documentgetElementById('profitPercentage').value = t.commission;
                 document.getElementById('advancedDate').value = t.date;
-                calculateProfit();
-            } else {
+                calculateProfit();            } else {
                 document.getElementById('type').value = t.type;
                 document.getElementById('amount').value = t.amount;
                 document.getElementById('description').value = t.description;
@@ -750,6 +918,7 @@
             updateProfitLoss();
             renderTransactions();
             updateChart();
+            renderCalendar();
         }
 
         function changePeriod(period) {
@@ -861,11 +1030,180 @@
             }
         }
 
+        function toggleTheme() {
+            const root = document.documentElement;
+            const currentTheme = root.classList.contains('light-theme') ? 'dark' : 'light';
+            root.classList.toggle('light-theme');
+
+            const tl = gsap.timeline();
+
+            if (currentTheme === 'light') {
+                // Анимация от солнца к луне
+                tl.to("#sun, #sun-ray-1, #sun-ray-2, #sun-ray-3, #sun-ray-4, #sun-ray-5, #sun-ray-6, #sun-ray-7, #sun-ray-8", {duration: 0.3, opacity: 0})
+                  .to("#moon", {duration: 0.5, morphSVG: "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z", ease: "power2.inOut"}, "-=0.3");
+            } else {
+                // Анимация от луны к солнцу
+                tl.to("#moon", {duration: 0.5, morphSVG: "M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z", ease: "power2.inOut"})
+                  .to("#sun", {duration: 0.1, opacity: 1})
+                  .to("#sun-ray-1, #sun-ray-2, #sun-ray-3, #sun-ray-4, #sun-ray-5, #sun-ray-6, #sun-ray-7, #sun-ray-8", {duration: 0.3, opacity: 1, stagger: 0.05}, "-=0.1");
+            }
+
+            // Обновляем цвета графика
+            updateChartColors();
+        }
+
+        function updateChartColors() {
+            const root = document.documentElement;
+            const isDarkTheme = !root.classList.contains('light-theme');
+
+            const newChartOptions = {
+                scales: {
+                    x: { 
+                        grid: { color: isDarkTheme ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+                        ticks: { color: isDarkTheme ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)' }
+                    },
+                    y: { 
+                        grid: { color: isDarkTheme ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+                        ticks: { 
+                            color: isDarkTheme ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)',
+                            callback: value => '$' + value
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        backgroundColor: isDarkTheme ? 'rgba(10,14,26,0.9)' : 'rgba(240,244,248,0.9)',
+                        bodyColor: isDarkTheme ? '#fff' : '#000',
+                        borderColor: isDarkTheme ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                    }
+                }
+            };
+
+            chart.options = { ...chart.options, ...newChartOptions };
+            chart.update();
+        }
+
+        function switchToCalendar() {
+            const chartContainer = document.querySelector('.chart-container');
+            const calendarContainer = document.querySelector('.calendar-container');
+            const rightButton = document.querySelector('.switch-view.right');
+            const leftButton = document.querySelector('.switch-view.left');
+
+            chartContainer.style.opacity = '0';
+            setTimeout(() => {
+                chartContainer.style.display = 'none';
+                calendarContainer.style.display = 'block';
+                setTimeout(() => {
+                    calendarContainer.style.opacity = '1';
+                }, 50);
+            }, 300);
+
+            rightButton.style.display = 'none';
+            leftButton.style.display = 'flex';
+            renderCalendar();
+        }
+
+        function switchToChart() {
+            const chartContainer = document.querySelector('.chart-container');
+            const calendarContainer = document.querySelector('.calendar-container');
+            const rightButton = document.querySelector('.switch-view.right');
+            const leftButton = document.querySelector('.switch-view.left');
+
+            calendarContainer.style.opacity = '0';
+            setTimeout(() => {
+                calendarContainer.style.display = 'none';
+                chartContainer.style.display = 'block';
+                setTimeout(() => {
+                    chartContainer.style.opacity = '1';
+                }, 50);
+            }, 300);
+
+            leftButton.style.display = 'none';
+            rightButton.style.display = 'flex';
+        }
+
+        function renderCalendar() {
+            const calendarGrid = document.getElementById('calendarGrid');
+            const currentMonthElement = document.getElementById('currentMonth');
+
+            // Очищаем текущий календарь
+            calendarGrid.innerHTML = '';
+
+            // Устанавливаем текущий месяц и год
+            currentMonthElement.textContent = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+            // Получаем первый день месяца
+            const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
+            // Добавляем дни недели
+            const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+            weekdays.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                calendarGrid.appendChild(dayElement);
+            });
+
+            // Добавляем пустые ячейки до первого дня месяца
+            for (let i = 0; i < (firstDay.getDay() || 7) - 1; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                calendarGrid.appendChild(emptyDay);
+            }
+
+            // Добавляем дни месяца
+            for (let i = 1; i <= lastDay.getDate(); i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = i;
+                
+                const dayBalance = document.createElement('div');
+                dayBalance.className = 'day-balance';
+                
+                const currentDayTransactions = transactions.filter(t => {
+                    const transactionDate = new Date(t.date);
+                    return transactionDate.getDate() === i &&
+                           transactionDate.getMonth() === currentDate.getMonth() &&
+                           transactionDate.getFullYear() === currentDate.getFullYear();
+                });
+                
+                const dayTotal = currentDayTransactions.reduce((acc, t) => 
+                    t.type === 'income' ? acc + t.amount : acc - t.amount, 0
+                );
+                
+                if (dayTotal !== 0) {
+                    dayBalance.textContent = `${dayTotal > 0 ? '+' : ''}$${dayTotal.toFixed(2)}`;
+                    dayBalance.classList.add(dayTotal > 0 ? 'positive-balance' : 'negative-balance');
+                }
+                
+                dayElement.appendChild(dayNumber);
+                dayElement.appendChild(dayBalance);
+                
+                if (i === new Date().getDate() && 
+                    currentDate.getMonth() === new Date().getMonth() && 
+                    currentDate.getFullYear() === new Date().getFullYear()) {
+                    dayElement.classList.add('today');
+                }
+                
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        function changeMonth(delta) {
+            currentDate.setMonth(currentDate.getMonth() + delta);
+            renderCalendar();
+        }
+
         // Инициализация
         initChart();
         updateUI();
         createFloatingParticles();
         createFloatingStars();
+        document.querySelector('.switch-view.left').style.display = 'none';
 
         // Обработчики событий
         window.onclick = function(event) {
@@ -876,3 +1214,4 @@
     </script>
 </body>
 </html>
+
