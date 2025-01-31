@@ -840,7 +840,49 @@
             const file = e.target.files[0];
             const reader = new FileReader();
             reader.onload = (e) => {
-                transactions = JSON.parse(e.target.result);
+                const content = e.target.result;
+                try {
+                    // Пробуем разобрать как JSON
+                    const jsonData = JSON.parse(content);
+                    transactions = jsonData;
+                } catch (error) {
+                    // Если не удалось разобрать как JSON, обрабатываем как текстовый формат
+                    const lines = content.split('\n');
+                    const newTransactions = [];
+                    let currentTransaction = {};
+
+                    lines.forEach(line => {
+                        const [key, value] = line.split(': ').map(item => item.trim());
+                        if (key === 'Тип') {
+                            if (Object.keys(currentTransaction).length > 0) {
+                                newTransactions.push(currentTransaction);
+                                currentTransaction = {};
+                            }
+                            currentTransaction.type = value;
+                        } else if (key === 'Сумма') {
+                            currentTransaction.amount = parseFloat(value);
+                        } else if (key ==='Описание') {
+                            currentTransaction.description = value;
+                        } else if (key === 'Дата') {
+                            currentTransaction.date = value;
+                        } else if (key === 'Тема') {
+                            currentTransaction.theme = value;
+                        } else if (key === 'Цена покупки') {
+                            currentTransaction.buyPrice = parseFloat(value) || null;
+                        } else if (key === 'Цена продажи') {
+                            currentTransaction.sellPrice = parseFloat(value) || null;
+                        } else if (key === 'Комиссия') {
+                            currentTransaction.commission = parseFloat(value) || null;
+                        }
+                    });
+
+                    if (Object.keys(currentTransaction).length > 0) {
+                        newTransactions.push(currentTransaction);
+                    }
+
+                    transactions = transactions.concat(newTransactions);
+                }
+                localStorage.setItem('transactions', JSON.stringify(transactions));
                 updateUI();
             };
             reader.readAsText(file);
@@ -870,7 +912,8 @@
                 document.getElementById('sellPrice').value = t.sellPrice;
                 document.getElementById('profitPercentage').value = t.commission;
                 document.getElementById('advancedDate').value = t.date;
-                calculateProfit();            } else {
+                calculateProfit();
+            } else {
                 document.getElementById('type').value = t.type;
                 document.getElementById('amount').value = t.amount;
                 document.getElementById('description').value = t.description;
@@ -1214,4 +1257,3 @@
     </script>
 </body>
 </html>
-
