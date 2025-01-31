@@ -3,281 +3,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мои цели</title>
+    <title>Neon Finance Dashboard - Цели</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <style>
-        /* Общие стили из главной страницы */
         :root {
-            --background-gradient-light: linear-gradient(135deg, #6a11cb, #2575fc);
-            --background-gradient-dark: linear-gradient(135deg, #4a0d8a, #1a4fb3);
-            --text-color-light: white;
-            --text-color-dark: #e0e0e0;
-            --card-bg-light: rgba(255, 255, 255, 0.1);
-            --card-bg-dark: rgba(0, 0, 0, 0.1);
-            --button-bg-light: #2575fc;
-            --button-bg-dark: #1a4fb3;
-            --button-text-light: white;
-            --button-text-dark: #e0e0e0;
-            --modal-bg-light: white;
-            --modal-bg-dark: #333;
-            --modal-text-light: black;
-            --modal-text-dark: white;
-            --error-color: #ff4444;
+            --bg: #0a0e1a;
+            --glass: rgba(255,255,255,0.05);
+            --accent: #00a3ff;
+            --text: rgba(255,255,255,0.95);
+            --positive: #00ff88;
+            --negative: #ff467e;
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        :root.light-theme {
+            --bg: #f0f4f8;
+            --glass: rgba(0,0,0,0.05);
+            --accent: #0077ff;
+            --text: rgba(0,0,0,0.95);
+            --positive: #00c853;
+            --negative: #ff1744;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui;
         }
 
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            padding: 20px;
-            animation: gradientAnimation 10s ease infinite;
-        }
-
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            padding: 20px;
-            border-radius: 15px;
-            margin-top: 80px;
-        }
-
-        /* Стили для карточек целей */
-        .goal-card {
-            background: var(--card-bg-light);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 15px 0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            padding: 2rem;
+            overflow-x: hidden;
             position: relative;
+            transition: background-color 0.3s ease;
         }
 
-        .goal-card.completed {
-            opacity: 0.7;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(0,163,255,0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0,255,136,0.1) 0%, transparent 20%);
+            z-index: -1;
+            animation: gradientMove 20s ease-in-out infinite alternate;
         }
 
-        .goal-card.completed .progress-bar {
-            background: #4CAF50;
+        @keyframes gradientMove {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        .floating-particle {
+            position: fixed;
+            width: 5px;
+            height: 5px;
+            background: var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .goals-list {
+            display: grid;
+            gap: 1rem;
+            grid-column: span 2;
+        }
+
+        .goal-card {
+            background: var(--glass);
+            padding: 1.5rem;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: var(--transition);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .goal-card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
         .goal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .goal-title {
+            font-size: 1.2rem;
+            font-weight: bold;
         }
 
         .goal-controls button {
-            margin-left: 10px;
-            padding: 5px 10px;
-            border-radius: 5px;
+            background: none;
             border: none;
+            color: var(--text);
             cursor: pointer;
-            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            margin-left: 0.5rem;
+            transition: var(--transition);
         }
 
-        /* Прогресс-бар */
-        .progress-container {
-            height: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 10px 0;
+        .goal-controls button:hover {
+            color: var(--accent);
+            transform: scale(1.1);
         }
 
         .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
             height: 100%;
-            background: var(--button-bg-light);
-            transition: width 0.5s ease, background 0.3s ease;
+            background: var(--accent);
+            transition: width 0.5s ease;
         }
 
         .goal-info {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            font-size: 0.9em;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
         }
 
-        /* Фильтры и поиск */
-        .filters {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
-        .filters input, .filters select {
-            padding: 10px 15px;
-            border-radius: 25px;
-            border: none;
-            background: var(--card-bg-light);
-            color: inherit;
-            min-width: 200px;
-            transition: all 0.3s ease;
-        }
-
-        .filters input:focus, .filters select:focus {
-            outline: 2px solid var(--button-bg-light);
-        }
-
-        /* Кнопки */
-        .add-goal-btn {
+        .add-btn {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 2rem;
+            right: 2rem;
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            border: none;
-            background: var(--button-bg-light);
-            color: var(--button-text-light);
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .add-goal-btn:hover {
-            transform: scale(1.1) rotate(90deg);
-        }
-
-        /* Кнопка "Назад на главную" */
-        .back-home-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #4CAF50;
+            background: var(--accent);
             color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
             border: none;
+            font-size: 2rem;
             cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        .back-home-btn:hover {
-            background-color: #45a049;
+        .add-btn:hover {
+            transform: scale(1.1) rotate(180deg);
         }
 
-        /* Модальное окно */
         .modal {
             display: none;
             position: fixed;
-            top: 0;
+            z-index: 1000;
             left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            overflow-y: auto;
         }
 
         .modal-content {
-            padding: 25px;
-            border-radius: 15px;
-            width: 90%;
+            background: var(--bg);
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid var(--glass);
+            border-radius: 16px;
+            width: 80%;
             max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            animation: modalAppear 0.3s ease-out;
             position: relative;
         }
 
-        .modal-close {
+        @keyframes modalAppear {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .close {
+            color: var(--text);
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 1.5em;
+            right: 10px;
+            top: 10px;
+            font-size: 28px;
+            font-weight: bold;
             cursor: pointer;
         }
 
-        .modal-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .close:hover {
+            color: var(--accent);
         }
 
-        .modal-form input, .modal-form textarea, .modal-form select {
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input, .form-group textarea {
             width: 100%;
-            box-sizing: border-box;
+            padding: 0.5rem;
+            border: 1px solid var(--glass);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
         }
 
-        .error-message {
-            color: var(--error-color);
-            font-size: 0.8em;
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            background: var(--accent);
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background: var(--positive);
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .filters input, .filters select {
+            padding: 0.5rem;
+            border: 1px solid var(--glass);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--glass);
+            color: var(--text);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .confirm-modal {
             display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
         }
 
-        /* Темы */
-        body.light-theme {
-            background: var(--background-gradient-light);
-            color: var(--text-color-light);
+        .confirm-modal-content {
+            background: var(--bg);
+            margin: 20% auto;
+            padding: 20px;
+            border: 1px solid var(--glass);
+            border-radius: 16px;
+            width: 300px;
+            text-align: center;
+            animation: modalAppear 0.3s ease-out;
         }
 
-        body.dark-theme {
-            background: var(--background-gradient-dark);
-            color: var(--text-color-dark);
-        }
-
-        body.dark-theme .goal-card {
-            background: var(--card-bg-dark);
-        }
-
-        body.dark-theme .progress-bar {
-            background: var(--button-bg-dark);
-        }
-
-        body.dark-theme .modal-content {
-            background: var(--modal-bg-dark);
-            color: var(--modal-text-dark);
-        }
-
-        body.light-theme .modal-content {
-            background: var(--modal-bg-light);
-            color: var(--modal-text-light);
+        .confirm-modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
         @media (max-width: 768px) {
-            .container {
-                width: 95%;
-                padding: 10px;
-                margin-top: 60px;
+            .dashboard {
+                grid-template-columns: 1fr;
             }
-            
+
+            .goals-list {
+                grid-column: span 1;
+            }
+
             .filters {
                 flex-direction: column;
-            }
-            
-            .goal-info {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
             }
         }
     </style>
 </head>
-<body class="light-theme">
-    <button class="back-home-btn" onclick="window.location.href = 'index.html'">Назад на главную</button>
-    
-    <div class="container">
-        <div class="filters">
+<body>
+    <button class="back-btn" onclick="window.location.href='index.html'">
+        <ion-icon name="arrow-back-outline"></ion-icon> Назад
+    </button>
+
+    <div class="dashboard">
+        <h1 style="grid-column: span 2; text-align: center; margin-bottom: 1rem;">Мои цели</h1>
+
+        <div class="filters" style="grid-column: span 2;">
             <input type="text" id="searchInput" placeholder="Поиск по названию">
             <select id="statusFilter">
                 <option value="all">Все цели</option>
@@ -289,216 +357,276 @@
         <div class="goals-list" id="goalsList"></div>
     </div>
 
-    <button class="add-goal-btn" id="addGoalBtn">+</button>
+    <button class="add-btn" onclick="openModal()">
+        <ion-icon name="add-outline"></ion-icon>
+    </button>
 
-    <div class="modal" id="goalModal">
+    <div id="goalModal" class="modal">
         <div class="modal-content">
-            <button class="modal-close" id="closeModalBtn">&times;</button>
-            <h2 id="modalTitle">Новая цель</h2>
-            <form class="modal-form" id="goalForm">
-                <div>
-                    <input type="text" id="goalTitle" placeholder="Название цели" required>
-                    <div class="error-message" id="titleError"></div>
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Добавить цель</h2>
+            <form id="goalForm">
+                <div class="form-group">
+                    <label for="goalTitle">Название цели</label>
+                    <input type="text" id="goalTitle" required>
                 </div>
-                <div>
-                    <input type="number" id="goalTarget" placeholder="Целевая сумма" min="1" required>
-                    <div class="error-message" id="targetError"></div>
+                <div class="form-group">
+                    <label for="goalTarget">Целевая сумма</label>
+                    <input type="number" id="goalTarget" required min="1">
                 </div>
-                <div>
-                    <input type="number" id="goalCurrent" placeholder="Текущий прогресс" min="0">
-                    <div class="error-message" id="currentError"></div>
+                <div class="form-group">
+                    <label for="goalDueDate">Срок достижения</label>
+                    <input type="date" id="goalDueDate">
                 </div>
-                <div>
-                    <input type="date" id="goalDueDate" min="">
-                    <div class="error-message" id="dateError"></div>
+                <div class="form-group">
+                    <label for="goalDescription">Описание</label>
+                    <textarea id="goalDescription" rows="3"></textarea>
                 </div>
-                <div>
-                    <textarea id="goalDescription" placeholder="Описание цели"></textarea>
-                </div>
-                <button type="submit">Сохранить</button>
+                <button type="submit" class="btn">Сохранить</button>
             </form>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="confirm-modal">
+        <div class="confirm-modal-content">
+            <h2>Подтверждение</h2>
+            <p>Вы уверены, что хотите удалить эту цель?</p>
+            <div class="confirm-modal-buttons">
+                <button class="btn" onclick="confirmDelete()">Да</button>
+                <button class="btn" onclick="closeConfirmModal()">Нет</button>
+            </div>
         </div>
     </div>
 
     <script>
         let goals = JSON.parse(localStorage.getItem('goals')) || [];
-        let editingId = null;
+        let transactions = [];
+        let extendedTransactions = [];
+        let editingGoalId = null;
+        let deletingGoalId = null;
 
-        // Инициализация даты
-        document.getElementById('goalDueDate').min = new Date().toISOString().split('T')[0];
-
-        // Открытие модального окна
-        document.getElementById('addGoalBtn').addEventListener('click', () => {
-            editingId = null;
-            document.getElementById('modalTitle').textContent = 'Новая цель';
-            resetForm();
-            showModal();
-        });
-
-        // Закрытие модального окна
-        document.getElementById('closeModalBtn').addEventListener('click', hideModal);
-        window.addEventListener('click', (e) => {
-            if (e.target === document.getElementById('goalModal')) hideModal();
-        });
-
-        // Обработка формы
-        document.getElementById('goalForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            handleFormSubmit();
-        });
-
-        // Функции работы с целями
-        function saveGoal(goalData) {
-            const validation = validateForm(goalData);
-            if (!validation.valid) {
-                showErrors(validation.errors);
-                return;
-            }
-
-            const goal = {
-                id: editingId || Date.now(),
-                title: goalData.title,
-                target: parseFloat(goalData.target),
-                current: parseFloat(goalData.current) || 0,
-                dueDate: goalData.dueDate,
-                description: goalData.description,
-                created: new Date().toISOString(),
-                completed: false
-            };
-
-            if (editingId) {
-                const index = goals.findIndex(g => g.id === editingId);
-                goals[index] = goal;
-            } else {
-                goals.push(goal);
-            }
-
-            localStorage.setItem('goals', JSON.stringify(goals));
-            hideModal();
-            renderGoals();
+        function loadTransactions() {
+            transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            extendedTransactions = JSON.parse(localStorage.getItem('extendedTransactions')) || [];
+            transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            extendedTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
         }
 
-        function deleteGoal(id) {
-            goals = goals.filter(goal => goal.id !== id);
-            localStorage.setItem('goals', JSON.stringify(goals));
-            renderGoals();
-        }
-
-        function toggleComplete(id) {
-            const index = goals.findIndex(g => g.id === id);
-            goals[index].completed = !goals[index].completed;
-            localStorage.setItem('goals', JSON.stringify(goals));
-            renderGoals();
-        }
-
-        // Рендеринг списка целей
         function renderGoals() {
+            loadTransactions();
+            const goalsList = document.getElementById('goalsList');
             const searchQuery = document.getElementById('searchInput').value.toLowerCase();
             const statusFilter = document.getElementById('statusFilter').value;
-            
+
             const filteredGoals = goals.filter(goal => {
                 const matchesSearch = goal.title.toLowerCase().includes(searchQuery);
                 const matchesStatus = statusFilter === 'all' || 
-                                    (statusFilter === 'active' && !goal.completed) ||
-                                    (statusFilter === 'completed' && goal.completed);
+                                      (statusFilter === 'active' && !goal.completed) ||
+                                      (statusFilter === 'completed' && goal.completed);
                 return matchesSearch && matchesStatus;
             });
 
-            const goalsList = document.getElementById('goalsList');
-            goalsList.innerHTML = filteredGoals.map(goal => `
-                <div class="goal-card ${goal.completed ? 'completed' : ''}">
-                    <div class="goal-header">
-                        <h3>${goal.title}</h3>
-                        <div class="goal-controls">
-                            <button onclick="editGoal(${goal.id})">✏️</button>
-                            <button onclick="deleteGoal(${goal.id})">🗑️</button>
-                            <button onclick="toggleComplete(${goal.id})">
-                                ${goal.completed ? '❌' : '✅'}
-                            </button>
+            goalsList.innerHTML = filteredGoals.map(goal => {
+                const progress = calculateProgress(goal);
+                const progressPercentage = (progress / goal.target) * 100;
+
+                return `
+                    <div class="goal-card ${goal.completed ? 'completed' : ''}">
+                        <div class="goal-header">
+                            <h3 class="goal-title">${goal.title}</h3>
+                            <div class="goal-controls">
+                                <button onclick="editGoal(${goal.id})" title="Редактировать">
+                                    <ion-icon name="create-outline"></ion-icon>
+                                </button>
+                                <button onclick="showConfirmModal(${goal.id})" title="Удалить">
+                                    <ion-icon name="trash-outline"></ion-icon>
+                                </button>
+                                <button onclick="toggleGoalComplete(${goal.id})" title="${goal.completed ? 'Отменить выполнение' : 'Отметить как выполненное'}">
+                                    <ion-icon name="${goal.completed ? 'close-circle-outline' : 'checkmark-circle-outline'}"></ion-icon>
+                                </button>
+                            </div>
                         </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+                        </div>
+                        <div class="goal-info">
+                            <span>Прогресс: $${progress.toFixed(2)} из $${goal.target}</span>
+                            ${goal.dueDate ? `<span>Срок: ${new Date(goal.dueDate).toLocaleDateString()}</span>` : ''}
+                        </div>
+                        ${goal.description ? `<p>${goal.description}</p>` : ''}
                     </div>
-                    ${goal.description ? `<p>${goal.description}</p>` : ''}
-                    <div class="progress-container">
-                        <div class="progress-bar" style="width: ${(goal.current / goal.target * 100)}%"></div>
-                    </div>
-                    <div class="goal-info">
-                        <span>Прогресс: $${goal.current} из $${goal.target}</span>
-                        ${goal.dueDate ? `<span>Срок: ${new Date(goal.dueDate).toLocaleDateString()}</span>` : ''}
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        // Вспомогательные функции
-        function editGoal(id) {
-            const goal = goals.find(g => g.id === id);
-            editingId = id;
-            document.getElementById('modalTitle').textContent = 'Редактировать цель';
-            document.getElementById('goalTitle').value = goal.title;
-            document.getElementById('goalTarget').value = goal.target;
-            document.getElementById('goalCurrent').value = goal.current;
-            document.getElementById('goalDueDate').value = goal.dueDate;
-            document.getElementById('goalDescription').value = goal.description;
-            showModal();
+        function calculateProgress(goal) {
+            const relevantTransactions = getAllRelevantTransactions(goal);
+            
+            const totalAmount = relevantTransactions.reduce((sum, t) => {
+                if (t.type === 'income' || t.type === 'доход') {
+                    return sum + parseFloat(t.amount);
+                } else if (t.type === 'expense' || t.type === 'расход') {
+                    return sum - parseFloat(t.amount);
+                }
+                return sum;
+            }, 0);
+
+            return Math.min(Math.max(totalAmount, 0), goal.target);
         }
 
-        function validateForm(data) {
-            const errors = {};
-            if (!data.title.trim()) errors.title = 'Введите название цели';
-            if (!data.target || data.target < 1) errors.target = 'Некорректная сумма';
-            if (data.current < 0) errors.current = 'Прогресс не может быть отрицательным';
-            if (data.dueDate && new Date(data.dueDate) < new Date()) errors.date = 'Некорректная дата';
-            return { valid: Object.keys(errors).length === 0, errors };
+        function getAllRelevantTransactions(goal) {
+            const allTransactions = [...transactions, ...extendedTransactions];
+            return allTransactions.filter(t => {
+                const transactionDate = new Date(t.date);
+                const goalCreatedDate = new Date(goal.created);
+                const goalCompletedDate = goal.completed ? new Date(goal.completedDate) : new Date();
+                return transactionDate >= goalCreatedDate && transactionDate <= goalCompletedDate;
+            });
         }
 
-        function showErrors(errors) {
-            document.getElementById('titleError').textContent = errors.title || '';
-            document.getElementById('targetError').textContent = errors.target || '';
-            document.getElementById('currentError').textContent = errors.current || '';
-            document.getElementById('dateError').textContent = errors.date || '';
+        function openModal(goalId = null) {
+            const modal = document.getElementById('goalModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const form = document.getElementById('goalForm');
+
+            editingGoalId = goalId;
+
+            if (goalId) {
+                const goal = goals.find(g => g.id === goalId);
+                modalTitle.textContent = 'Редактировать цель';
+                form.goalTitle.value = goal.title;
+                form.goalTarget.value = goal.target;
+                form.goalDueDate.value = goal.dueDate || '';
+                form.goalDescription.value = goal.description || '';
+            } else {
+                modalTitle.textContent = 'Добавить цель';
+                form.reset();
+            }
+
+            modal.style.display = 'block';
         }
 
-        function resetForm() {
-            document.getElementById('goalForm').reset();
-            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+        function closeModal() {
+            const modal = document.getElementById('goalModal');
+            modal.style.display = 'none';
         }
 
-        function showModal() {
-            document.getElementById('goalModal').style.display = 'flex';
-        }
-
-        function hideModal() {
-            document.getElementById('goalModal').style.display = 'none';
-        }
-
-        function handleFormSubmit() {
-            const formData = {
-                title: document.getElementById('goalTitle').value,
-                target: document.getElementById('goalTarget').value,
-                current: document.getElementById('goalCurrent').value,
-                dueDate: document.getElementById('goalDueDate').value,
-                description: document.getElementById('goalDescription').value
+        function saveGoal(event) {
+            event.preventDefault();
+            const form = event.target;
+            const goalData = {
+                title: form.goalTitle.value,
+                target: parseFloat(form.goalTarget.value),
+                dueDate: form.goalDueDate.value || null,
+                description: form.goalDescription.value
             };
-            saveGoal(formData);
+
+            if (editingGoalId) {
+                const index = goals.findIndex(g => g.id === editingGoalId);
+                goals[index] = { ...goals[index], ...goalData };
+            } else {
+                goalData.id = Date.now();
+                goalData.created = new Date().toISOString();
+                goalData.completed = false;
+                goals.push(goalData);
+            }
+
+            localStorage.setItem('goals', JSON.stringify(goals));
+            closeModal();
+            renderGoals();
         }
 
-        // Инициализация
+        function showConfirmModal(id) {
+            deletingGoalId = id;
+            const modal = document.getElementById('confirmModal');
+            modal.style.display = 'block';
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirmModal');
+            modal.style.display = 'none';
+        }
+
+        function confirmDelete() {
+            if (deletingGoalId) {
+                goals = goals.filter(goal => goal.id !== deletingGoalId);
+                localStorage.setItem('goals', JSON.stringify(goals));
+                renderGoals();
+                closeConfirmModal();
+            }
+        }
+
+        function toggleGoalComplete(id) {
+            const index = goals.findIndex(g => g.id === id);
+            goals[index].completed = !goals[index].completed;
+            if (goals[index].completed) {
+                goals[index].completedDate = new Date().toISOString();
+            } else {
+                delete goals[index].completedDate;
+            }
+            localStorage.setItem('goals', JSON.stringify(goals));
+            renderGoals();
+        }
+
+        function editGoal(id) {
+            openModal(id);
+        }
+
+        document.getElementById('goalForm').addEventListener('submit', saveGoal);
         document.getElementById('searchInput').addEventListener('input', renderGoals);
         document.getElementById('statusFilter').addEventListener('change', renderGoals);
-        renderGoals();
 
-        // Переключение темы
-        function toggleTheme() {
-            document.body.classList.toggle('dark-theme');
-            document.body.classList.toggle('light-theme');
-            localStorage.setItem('theme', 
-                document.body.classList.contains('dark-theme') ? 'dark' : 'light'
-            );
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('goalModal')) {
+                closeModal();
+            }
+            if (event.target == document.getElementById('confirmModal')) {
+                closeConfirmModal();
+            }
         }
 
-        // Применение сохраненной темы
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.body.classList.add(savedTheme + '-theme');
+        function createFloatingParticles() {
+            const particlesContainer = document.createElement('div');
+            particlesContainer.className = 'particles-container';
+            document.body.appendChild(particlesContainer);
+
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'floating-particle';
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.top = `${Math.random() * 100}vh`;
+                particle.style.animationDuration = `${Math.random() * 10 + 5}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        function updateData() {
+            loadTransactions();
+            renderGoals();
+            if (document.visibilityState === 'visible') {
+                renderGoals();
+            }
+        }
+
+        function syncDataBetweenTabs(event) {
+            if (event.key === 'transactions' || event.key === 'extendedTransactions' || event.key === 'goals') {
+                updateData();
+            }
+        }
+
+        window.addEventListener('storage', syncDataBetweenTabs);
+        createFloatingParticles();
+        renderGoals();
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'transactions' || e.key === 'extendedTransactions' || e.key === 'goals') {
+                updateData();
+            }
+        });
+
+        document.addEventListener('visibilitychange', updateData);
+        setInterval(updateData, 500); // Обновляем каждые 500 мс
     </script>
 </body>
 </html>
