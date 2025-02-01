@@ -645,6 +645,39 @@
             font-size: 1.2rem;
             font-weight: bold;
         }
+
+        /* Стили для новых кнопок Telegram */
+        .telegram-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .telegram-button {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .telegram-button:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(0,163,255,0.8);
+        }
+
+        .telegram-button ion-icon {
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
@@ -681,6 +714,16 @@
                 <button class="period-button active" onclick="changePeriod('all')">Все</button>
             </div>
             <button class="stats-button" onclick="openStatsModal()">Показать статистику</button>
+            <div class="telegram-buttons">
+                <a href="https://t.me/res661" target="_blank" class="telegram-button">
+                    <ion-icon name="paper-plane-outline"></ion-icon>
+                    Telegram 1
+                </a>
+                <a href="https://t.me/slavniytrade" target="_blank" class="telegram-button">
+                    <ion-icon name="paper-plane-outline"></ion-icon>
+                    Telegram 2
+                </a>
+            </div>
         </div>
 
         <div class="profit-loss">
