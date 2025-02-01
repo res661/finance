@@ -564,6 +564,87 @@
             justify-content: flex-start;
             padding-left: 10px;
         }
+
+        /* Стили для новой кнопки статистики */
+        .stats-button {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stats-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(0,163,255,0.8);
+        }
+
+        /* Стили для модального окна статистики */
+        .stats-modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            backdrop-filter: blur(5px);
+        }
+
+        .stats-modal-content {
+            background: var(--glass);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 80%;
+            max-width: 600px;
+            border-radius: 24px;
+            color: var(--text);
+        }
+
+        .stats-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .stats-close:hover,
+        .stats-close:focus {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stats-item {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .stats-item h3 {
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .stats-item p {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -599,6 +680,7 @@
                 <button class="period-button" onclick="changePeriod('month')">Месяц</button>
                 <button class="period-button active" onclick="changePeriod('all')">Все</button>
             </div>
+            <button class="stats-button" onclick="openStatsModal()">Показать статистику</button>
         </div>
 
         <div class="profit-loss">
@@ -670,6 +752,41 @@
                 <button onclick="calculateProfit()" class="neon-button">Рассчитать</button>
                 <div id="calculationResult"></div>
                 <button onclick="addAdvancedTransaction()" class="neon-button" id="addAdvancedTransactionBtn" style="display:none;">Добавить сделку</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно статистики -->
+    <div id="statsModal" class="stats-modal">
+        <div class="stats-modal-content">
+            <span class="stats-close" onclick="closeStatsModal()">&times;</span>
+            <h2>Статистика</h2>
+            <div class="stats-grid">
+                <div class="stats-item">
+                    <h3>Сегодня</h3>
+                    <p id="todayEarnings">$0</p>
+                    <p id="todayDeals">0 сделок</p>
+                </div>
+                <div class="stats-item">
+                    <h3>Вчера</h3>
+                    <p id="yesterdayEarnings">$0</p>
+                    <p id="yesterdayDeals">0 сделок</p>
+                </div>
+                <div class="stats-item">
+                    <h3>Последние 7 дней</h3>
+                    <p id="weekEarnings">$0</p>
+                    <p id="weekDeals">0 сделок</p>
+                </div>
+                <div class="stats-item">
+                    <h3>Последние 30 дней</h3>
+                    <p id="monthEarnings">$0</p>
+                    <p id="monthDeals">0 сделок</p>
+                </div>
+                <div class="stats-item" style="grid-column: span 2;">
+                    <h3>Итого за всё время</h3>
+                    <p id="totalEarnings">$0</p>
+                    <p id="totalDeals">0 сделок</p>
+                </div>
             </div>
         </div>
     </div>
@@ -1241,6 +1358,46 @@
             renderCalendar();
         }
 
+        function openStatsModal() {
+            document.getElementById('statsModal').style.display = 'block';
+            updateStats();
+        }
+
+        function closeStatsModal() {
+            document.getElementById('statsModal').style.display = 'none';
+        }
+
+        function updateStats() {
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
+            const yesterday = new Date(now.setDate(now.getDate() - 1)).toISOString().split('T')[0];
+            const weekAgo = new Date(now.setDate(now.getDate() - 6)).toISOString().split('T')[0];
+            const monthAgo = new Date(now.setMonth(now.getMonth() - 1)).toISOString().split('T')[0];
+
+            const todayStats = calculateStats(transactions.filter(t => t.date === today));
+            const yesterdayStats = calculateStats(transactions.filter(t => t.date === yesterday));
+            const weekStats = calculateStats(transactions.filter(t => t.date >= weekAgo));
+            const monthStats = calculateStats(transactions.filter(t => t.date >= monthAgo));
+            const totalStats = calculateStats(transactions);
+
+            document.getElementById('todayEarnings').textContent = `$${todayStats.earnings.toFixed(2)}`;
+            document.getElementById('todayDeals').textContent = `${todayStats.deals} сделок`;
+            document.getElementById('yesterdayEarnings').textContent = `$${yesterdayStats.earnings.toFixed(2)}`;
+            document.getElementById('yesterdayDeals').textContent = `${yesterdayStats.deals} сделок`;
+            document.getElementById('weekEarnings').textContent = `$${weekStats.earnings.toFixed(2)}`;
+            document.getElementById('weekDeals').textContent = `${weekStats.deals} сделок`;
+            document.getElementById('monthEarnings').textContent = `$${monthStats.earnings.toFixed(2)}`;
+            document.getElementById('monthDeals').textContent = `${monthStats.deals} сделок`;
+            document.getElementById('totalEarnings').textContent = `$${totalStats.earnings.toFixed(2)}`;
+            document.getElementById('totalDeals').textContent = `${totalStats.deals} сделок`;
+        }
+
+        function calculateStats(transactions) {
+            const earnings = transactions.reduce((acc, t) => t.type === 'income' ? acc + t.amount : acc, 0);
+            const deals = transactions.length;
+            return { earnings, deals };
+        }
+
         // Инициализация
         initChart();
         updateUI();
@@ -1252,6 +1409,9 @@
         window.onclick = function(event) {
             if (event.target == document.getElementById('transactionModal')) {
                 closeModal();
+            }
+            if (event.target == document.getElementById('statsModal')) {
+                closeStatsModal();
             }
         }
     </script>
