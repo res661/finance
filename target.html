@@ -188,12 +188,11 @@
             height: 100%;
             background-color: rgba(0,0,0,0.5);
             backdrop-filter: blur(5px);
-            overflow-y: auto;
         }
 
         .modal-content {
             background: var(--bg);
-            margin: 5% auto;
+            margin: 10% auto;
             padding: 20px;
             border: 1px solid var(--glass);
             border-radius: 16px;
@@ -201,7 +200,6 @@
             max-width: 500px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             animation: modalAppear 0.3s ease-out;
-            position: relative;
         }
 
         @keyframes modalAppear {
@@ -211,9 +209,7 @@
 
         .close {
             color: var(--text);
-            position: absolute;
-            right: 10px;
-            top: 10px;
+            float: right;
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
@@ -375,6 +371,10 @@
                     <input type="number" id="goalTarget" required min="1">
                 </div>
                 <div class="form-group">
+                    <label for="goalProgress">Текущий прогресс</label>
+                    <input type="number" id="goalProgress" min="0" step="0.01">
+                </div>
+                <div class="form-group">
                     <label for="goalDueDate">Срок достижения</label>
                     <input type="date" id="goalDueDate">
                 </div>
@@ -400,20 +400,12 @@
 
     <script>
         let goals = JSON.parse(localStorage.getItem('goals')) || [];
-        let transactions = [];
-        let extendedTransactions = [];
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        let extendedTransactions = JSON.parse(localStorage.getItem('extendedTransactions')) || [];
         let editingGoalId = null;
         let deletingGoalId = null;
 
-        function loadTransactions() {
-            transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-            extendedTransactions = JSON.parse(localStorage.getItem('extendedTransactions')) || [];
-            transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-            extendedTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-        }
-
         function renderGoals() {
-            loadTransactions();
             const goalsList = document.getElementById('goalsList');
             const searchQuery = document.getElementById('searchInput').value.toLowerCase();
             const statusFilter = document.getElementById('statusFilter').value;
@@ -427,7 +419,7 @@
             });
 
             goalsList.innerHTML = filteredGoals.map(goal => {
-                const progress = calculateProgress(goal);
+                const progress = goal.progress || 0;
                 const progressPercentage = (progress / goal.target) * 100;
 
                 return `
@@ -460,28 +452,7 @@
         }
 
         function calculateProgress(goal) {
-            const relevantTransactions = getAllRelevantTransactions(goal);
-            
-            const totalAmount = relevantTransactions.reduce((sum, t) => {
-                if (t.type === 'income' || t.type === 'доход') {
-                    return sum + parseFloat(t.amount);
-                } else if (t.type === 'expense' || t.type === 'расход') {
-                    return sum - parseFloat(t.amount);
-                }
-                return sum;
-            }, 0);
-
-            return Math.min(Math.max(totalAmount, 0), goal.target);
-        }
-
-        function getAllRelevantTransactions(goal) {
-            const allTransactions = [...transactions, ...extendedTransactions];
-            return allTransactions.filter(t => {
-                const transactionDate = new Date(t.date);
-                const goalCreatedDate = new Date(goal.created);
-                const goalCompletedDate = goal.completed ? new Date(goal.completedDate) : new Date();
-                return transactionDate >= goalCreatedDate && transactionDate <= goalCompletedDate;
-            });
+            return goal.progress || 0;
         }
 
         function openModal(goalId = null) {
@@ -496,6 +467,7 @@
                 modalTitle.textContent = 'Редактировать цель';
                 form.goalTitle.value = goal.title;
                 form.goalTarget.value = goal.target;
+                form.goalProgress.value = goal.progress || 0;
                 form.goalDueDate.value = goal.dueDate || '';
                 form.goalDescription.value = goal.description || '';
             } else {
@@ -517,6 +489,7 @@
             const goalData = {
                 title: form.goalTitle.value,
                 target: parseFloat(form.goalTarget.value),
+                progress: parseFloat(form.goalProgress.value) || 0,
                 dueDate: form.goalDueDate.value || null,
                 description: form.goalDescription.value
             };
@@ -602,31 +575,22 @@
         }
 
         function updateData() {
-            loadTransactions();
+            transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            extendedTransactions = JSON.parse(localStorage.getItem('extendedTransactions')) || [];
             renderGoals();
-            if (document.visibilityState === 'visible') {
-                renderGoals();
-            }
         }
 
-        function syncDataBetweenTabs(event) {
-            if (event.key === 'transactions' || event.key === 'extendedTransactions' || event.key === 'goals') {
-                updateData();
-            }
-        }
-
-        window.addEventListener('storage', syncDataBetweenTabs);
         createFloatingParticles();
         renderGoals();
 
         window.addEventListener('storage', function(e) {
-            if (e.key === 'transactions' || e.key === 'extendedTransactions' || e.key === 'goals') {
+            if (e.key === 'transactions' || e.key === 'extendedTransactions') {
                 updateData();
             }
         });
 
-        document.addEventListener('visibilitychange', updateData);
-        setInterval(updateData, 500); // Обновляем каждые 500 мс
+        setInterval(updateData, 5000);
     </script>
 </body>
 </html>
+
