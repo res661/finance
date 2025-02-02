@@ -457,7 +457,7 @@
             border-radius: 24px;
             padding: 1rem;
             position: relative;
-            overflow: hidden;
+            overflow: auto;
             grid-column: span 2;
             transition: opacity 0.3s ease-in-out;
         }
@@ -487,8 +487,9 @@
 
         .calendar-grid {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
+            grid-template-columns: repeat(7, minmax(100px, 1fr));
             gap: 0.5rem;
+            min-width: 700px;
         }
 
         .calendar-day {
@@ -678,6 +679,38 @@
         .telegram-button ion-icon {
             font-size: 1.2rem;
         }
+
+        /* Стили для подтверждающего окна */
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            z-index: 1002;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            backdrop-filter: blur(5px);
+        }
+
+        .confirm-modal-content {
+            background: var(--glass);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 80%;
+            max-width: 400px;
+            border-radius: 24px;
+            text-align: center;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -765,7 +798,7 @@
     <!-- Modal -->
     <div id="transactionModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
+            <span class="close" onclick="closeModalWithConfirmation()">&times;</span>
             <h2>Добавить транзакцию</h2>
             <select id="transactionType" class="neon-select" onchange="toggleTransactionFields()">
                 <option value="simple">Простая транзакция</option>
@@ -837,12 +870,25 @@
     <!-- Скрытый input для импорта -->
     <input type="file" id="fileInput" style="display:none" onchange="importTransactions(event)">
 
+    <!-- Подтверждающее окно -->
+    <div id="confirmModal" class="confirm-modal">
+        <div class="confirm-modal-content">
+            <p>Выйти без изменений?</p>
+            <div class="confirm-buttons">
+                <button onclick="confirmCloseModal(true)" class="neon-button">Да</button>
+                <button onclick="confirmCloseModal(false)" class="neon-button">Нет</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
         let chart;
         let currentPeriod = 'all';
         let lastCalculatedProfit = 0;
         let currentDate = new Date();
+        let editingTransactionIndex = null;
+        let hasChanges = false;
 
         function initChart() {
             const ctx = document.getElementById('mainChart').getContext('2d');
@@ -924,8 +970,8 @@
 
         function addTransaction() {
             const amount = parseFloat(document.getElementById('amount').value);
-            if (!amount || amount <= 0) return alert('Введите корректную сумму');
-            
+            if (isNaN(amount) || amount <= 0) return alert('Введите корректную сумму');
+
             const transaction = {
                 type: document.getElementById('type').value,
                 amount: amount,
@@ -933,7 +979,12 @@
                 date: document.getElementById('date').value || new Date().toISOString().split('T')[0]
             };
             
-            transactions.push(transaction);
+            if (editingTransactionIndex !== null) {
+                transactions[editingTransactionIndex] = transaction;
+            } else {
+                transactions.push(transaction);
+            }
+            
             localStorage.setItem('transactions', JSON.stringify(transactions));
             updateUI();
             closeModal();
@@ -959,6 +1010,7 @@
             
             document.getElementById('calculationResult').innerHTML = resultHTML;
             document.getElementById('addAdvancedTransactionBtn').style.display = 'block';
+            hasChanges = true;
         }
 
         function addAdvancedTransaction() {
@@ -980,7 +1032,12 @@
                 commission: percent
             };
 
-            transactions.push(transaction);
+            if (editingTransactionIndex !== null) {
+                transactions[editingTransactionIndex] = transaction;
+            } else {
+                transactions.push(transaction);
+            }
+
             localStorage.setItem('transactions', JSON.stringify(transactions));
             updateUI();
             closeModal();
@@ -1002,11 +1059,9 @@
             reader.onload = (e) => {
                 const content = e.target.result;
                 try {
-                    // Пробуем разобрать как JSON
                     const jsonData = JSON.parse(content);
                     transactions = jsonData;
                 } catch (error) {
-                    // Если не удалось разобрать как JSON, обрабатываем как текстовый формат
                     const lines = content.split('\n');
                     const newTransactions = [];
                     let currentTransaction = {};
@@ -1063,6 +1118,7 @@
         }
 
         function editTransaction(index) {
+            editingTransactionIndex = index;
             const t = transactions[index];
             document.getElementById('transactionType').value = t.theme ? 'advanced' : 'simple';
             toggleTransactionFields();
@@ -1080,8 +1136,7 @@
                 document.getElementById('date').value = t.date;
             }
             openModal();
-            transactions.splice(index, 1);
-            updateUI();
+            hasChanges = false;
         }
 
         function confirmDelete(index) {
@@ -1098,11 +1153,29 @@
 
         function openModal() {
             document.getElementById('transactionModal').style.display = 'block';
+            hasChanges = false;
         }
 
         function closeModal() {
             document.getElementById('transactionModal').style.display = 'none';
             clearInputs();
+            editingTransactionIndex = null;
+            hasChanges = false;
+        }
+
+        function closeModalWithConfirmation() {
+            if (hasChanges) {
+                document.getElementById('confirmModal').style.display = 'block';
+            } else {
+                closeModal();
+            }
+        }
+
+        function confirmCloseModal(confirmed) {
+            document.getElementById('confirmModal').style.display = 'none';
+            if (confirmed) {
+                closeModal();
+            }
         }
 
         function updateChart() {
@@ -1125,8 +1198,8 @@
         function updateUI() {
             updateBalance();
             updateProfitLoss();
-            renderTransactions();
             updateChart();
+            renderTransactions();
             renderCalendar();
         }
 
@@ -1206,6 +1279,7 @@
             const type = document.getElementById('transactionType').value;
             document.getElementById('simpleTransactionFields').style.display = type === 'simple' ? 'block' : 'none';
             document.getElementById('advancedTransactionFields').style.display = type === 'advanced' ? 'block' : 'none';
+            hasChanges = true;
         }
 
         function createFloatingParticles() {
@@ -1326,6 +1400,7 @@
         }
 
         function renderCalendar() {
+            if (!document.getElementById('calendarGrid')) return;
             const calendarGrid = document.getElementById('calendarGrid');
             const currentMonthElement = document.getElementById('currentMonth');
 
@@ -1441,22 +1516,36 @@
             return { earnings, deals };
         }
 
-        // Инициализация
-        initChart();
-        updateUI();
-        createFloatingParticles();
-        createFloatingStars();
-        document.querySelector('.switch-view.left').style.display = 'none';
-
-        // Обработчики событий
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('transactionModal')) {
-                closeModal();
-            }
-            if (event.target == document.getElementById('statsModal')) {
-                closeStatsModal();
+        function checkForChanges() {
+            const type = document.getElementById('transactionType').value;
+            if (type === 'simple') {
+                return document.getElementById('amount').value !== '' ||
+                       document.getElementById('description').value !== '' ||
+                       document.getElementById('date').value !== '';
+            } else {
+                return document.getElementById('skinName').value !== '' ||
+                       document.getElementById('buyPrice').value !== '' ||
+                       document.getElementById('sellPrice').value !== '' ||
+                       document.getElementById('advancedDate').value !== '';
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initChart();
+            updateUI();
+            createFloatingParticles();
+            createFloatingStars();
+            document.querySelector('.switch-view.left').style.display = 'none';
+        });
+
+        // Добавляем обработчики событий для отслеживания изменений в полях ввода
+        const inputFields = document.querySelectorAll('.neon-input, .neon-select');
+        inputFields.forEach(field => {
+            field.addEventListener('input', () => {
+                hasChanges = true;
+            });
+        });
     </script>
 </body>
 </html>
+
