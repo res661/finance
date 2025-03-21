@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html lang="ru">
+<!DOCTYPE
+html >
+  <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1077,7 +1078,7 @@
 
     select.form-control {
         appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23718096' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right var(--spacing-md) center;
         background-size: 16px;
@@ -1476,6 +1477,239 @@
     .notification.info {
         background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     }
+
+    /* Дополнительные стили для расширенной статистики */
+    .advanced-stats {
+        display: none;
+        margin-top: var(--spacing-xl);
+        animation: fadeIn 0.5s ease;
+    }
+
+    .advanced-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-lg);
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .advanced-stats-card {
+        background: var(--bg-tertiary);
+        border-radius: var(--radius-md);
+        padding: var(--spacing-lg);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition-normal);
+    }
+
+    .advanced-stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--border-hover);
+    }
+
+    .advanced-stats-card h3 {
+        margin-bottom: var(--spacing-md);
+        font-size: 1.1rem;
+        color: var(--text-primary);
+        position: relative;
+        display: inline-block;
+    }
+
+    .advanced-stats-card h3::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background: var(--gradient-primary);
+    }
+
+    .monthly-profit-chart {
+        height: 300px;
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .transaction-rank-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .transaction-rank-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--spacing-md);
+        border-bottom: 1px solid var(--border);
+        transition: var(--transition-normal);
+    }
+
+    .transaction-rank-item:last-child {
+        border-bottom: none;
+    }
+
+    .transaction-rank-item:hover {
+        background: var(--glass);
+        transform: translateX(5px);
+    }
+
+    .transaction-rank-info {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+
+    .transaction-rank-name {
+        font-weight: 600;
+    }
+
+    .transaction-rank-date {
+        font-size: 0.8rem;
+        color: var(--text-tertiary);
+    }
+
+    .transaction-rank-amount {
+        font-weight: 700;
+    }
+
+    .transaction-rank-amount.positive {
+        color: var(--positive);
+    }
+
+    .transaction-rank-amount.negative {
+        color: var(--negative);
+    }
+
+    .best-day-card {
+        grid-column: span 2;
+    }
+
+    .best-day-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: var(--spacing-md);
+    }
+
+    .best-day-date {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .best-day-amount {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .best-day-amount.positive {
+        color: var(--positive);
+    }
+
+    .best-day-amount.negative {
+        color: var(--negative);
+    }
+
+    .tab-buttons {
+        display: flex;
+        justify-content: center;
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+    }
+
+    /* Currency Switcher Styles */
+    .currency-switcher {
+        position: fixed;
+        top: var(--spacing-xl);
+        left: calc(var(--spacing-xl) + 60px);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        z-index: 100;
+    }
+
+    .currency-dropdown {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--spacing-sm) var(--spacing-md);
+        color: var(--text-primary);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition-normal);
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        min-width: 100px;
+        text-align: center;
+    }
+
+    .currency-dropdown:hover {
+        border-color: var(--accent-primary);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+    }
+
+    .currency-options {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        margin-top: var(--spacing-xs);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        z-index: 101;
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .currency-option {
+        padding: var(--spacing-sm) var(--spacing-md);
+        cursor: pointer;
+        transition: var(--transition-fast);
+    }
+
+    .currency-option:hover {
+        background: var(--glass-hover);
+        color: var(--accent-primary);
+    }
+
+    .currency-option.active {
+        background: var(--accent-primary);
+        color: white;
+    }
+
+    .currency-info {
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 0;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 0.8rem;
+        color: var(--text-tertiary);
+        max-width: 200px;
+        box-shadow: var(--shadow-sm);
+        z-index: 99;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        pointer-events: none;
+    }
+
+    .currency-dropdown:hover + .currency-info,
+    .currency-info:hover {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .currency-info-date {
+        font-weight: 600;
+        color: var(--accent-primary);
+    }
 </style>
 </head>
 <body>
@@ -1494,6 +1728,27 @@
     <line id="sun-ray-7" x1="4.22" y1="19.78" x2="5.64" y2="18.36" style="display:none;"/>
     <line id="sun-ray-8" x1="18.36" y1="5.64" x2="19.78" y2="4.22" style="display:none;"/>
 </svg>
+</div>
+
+<!-- Currency Switcher -->
+<div class="currency-switcher">
+    <div class="currency-dropdown" onclick="toggleCurrencyOptions()">
+        <span id="currentCurrency">USD</span>
+        <div class="currency-options" id="currencyOptions">
+            <div class="currency-option active" data-currency="USD" onclick="changeCurrency('USD')">USD</div>
+            <div class="currency-option" data-currency="EUR" onclick="changeCurrency('EUR')">EUR</div>
+            <div class="currency-option" data-currency="GBP" onclick="changeCurrency('GBP')">GBP</div>
+            <div class="currency-option" data-currency="CAD" onclick="changeCurrency('CAD')">CAD</div>
+            <div class="currency-option" data-currency="PLN" onclick="changeCurrency('PLN')">PLN</div>
+            <div class="currency-option" data-currency="UAH" onclick="changeCurrency('UAH')">UAH</div>
+            <div class="currency-option" data-currency="RUB" onclick="changeCurrency('RUB')">RUB</div>
+            <div class="currency-option" data-currency="KZT" onclick="changeCurrency('KZT')">KZT</div>
+        </div>
+    </div>
+    <div class="currency-info" id="currencyInfo">
+        <span>Курс обновляется ежедневно. Последнее обновление: </span> 
+        <span class="currency-info-date" id="lastUpdateDate">Загрузка...</span>
+    </div>
 </div>
 
 <div class="nav-bar">
@@ -1527,11 +1782,11 @@
         Показать статистику
     </button>
     <div class="telegram-buttons">
-        <a href="https://t.me/res661" target="_blank" class="telegram-button">
+        <a href="https://t.me/res661" target="_blank" class="telegram-button" rel="noreferrer">
             <ion-icon name="paper-plane-outline"></ion-icon>
             <span>Telegram 1</span>
         </a>
-        <a href="https://t.me/slavniytrade" target="_blank" class="telegram-button">
+        <a href="https://t.me/slavniytrade" target="_blank" class="telegram-button" rel="noreferrer">
             <ion-icon name="paper-plane-outline"></ion-icon>
             <span>Telegram 2</span>
         </a>
@@ -1699,6 +1954,57 @@
                 <small id="totalDeals">0 сделок</small>
             </div>
         </div>
+        
+        <div class="tab-buttons">
+            <button class="btn btn-primary" onclick="showAdvancedStats()">
+                <ion-icon name="analytics-outline"></ion-icon>
+                Дополнительная статистика
+            </button>
+        </div>
+        
+        <div id="advancedStats" class="advanced-stats">
+            <div class="monthly-profit-chart">
+                <canvas id="monthlyProfitChart"></canvas>
+            </div>
+            
+            <div class="advanced-stats-grid">
+                <div class="advanced-stats-card">
+                    <h3>Топ-5 прибыльных сделок</h3>
+                    <ul class="transaction-rank-list" id="topProfitableDeals">
+                        <!-- Будет заполнено динамически -->
+                    </ul>
+                </div>
+                
+                <div class="advanced-stats-card">
+                    <h3>Топ-5 убыточных сделок</h3>
+                    <ul class="transaction-rank-list" id="topLossDeals">
+                        <!-- Будет заполнено динамически -->
+                    </ul>
+                </div>
+                
+                <div class="advanced-stats-card best-day-card">
+                    <h3>Лучший день</h3>
+                    <div class="best-day-info" id="bestDayInfo">
+                        <!-- Будет заполнено динамически -->
+                    </div>
+                </div>
+                
+                <div class="advanced-stats-card best-day-card">
+                    <h3>Худший день</h3>
+                    <div class="best-day-info" id="worstDayInfo">
+                        <!-- Будет заполнено динамически -->
+                    </div>
+                </div>
+                
+                <div class="advanced-stats-card best-day-card">
+                    <h3>Средний дневной заработок</h3>
+                    <div class="best-day-info">
+                        <span class="best-day-date">За выбранный период</span>
+                        <span class="best-day-amount" id="averageDailyProfit">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
         <button onclick="closeStatsModal()" class="btn btn-primary">Закрыть</button>
@@ -1723,12 +2029,194 @@
 <script>
 let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 let chart;
+let monthlyProfitChart;
 let currentPeriod = 'all';
 let lastCalculatedProfit = 0;
 let currentDate = new Date();
 let editingTransactionIndex = null;
 let hasChanges = false;
 let sparkles = [];
+let currentCurrency = 'USD';
+let exchangeRates = {};
+let lastRatesUpdate = null;
+
+// API конфигурация
+const API_CONFIG = {
+    url: 'http://apilayer.net/api/live',
+    access_key: 'c02aef899e848950cd99e5899c67e134',
+    currencies: 'EUR,GBP,CAD,PLN,UAH,RUB,KZT',
+    source: 'USD',
+    format: 1
+};
+
+// Функция для получения курсов валют
+async function fetchExchangeRates() {
+    try {
+        // Проверяем, есть ли сохраненные курсы и не устарели ли они
+        const savedRates = localStorage.getItem('exchangeRates');
+        const savedDate = localStorage.getItem('ratesLastUpdate');
+        
+        if (savedRates && savedDate) {
+            const lastUpdate = new Date(savedDate);
+            const now = new Date();
+            
+            // Если курсы обновлялись сегодня, используем их
+            if (lastUpdate.toDateString() === now.toDateString()) {
+                exchangeRates = JSON.parse(savedRates);
+                lastRatesUpdate = lastUpdate;
+                updateCurrencyInfo();
+                return;
+            }
+        }
+        
+        // Если курсов нет или они устарели, запрашиваем новые
+        const queryParams = new URLSearchParams({
+            access_key: API_CONFIG.access_key,
+            currencies: API_CONFIG.currencies,
+            source: API_CONFIG.source,
+            format: API_CONFIG.format
+        });
+        
+        const response = await fetch(`${API_CONFIG.url}?${queryParams}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            exchangeRates = data.quotes;
+            lastRatesUpdate = new Date();
+            
+            // Сохраняем курсы и дату обновления
+            localStorage.setItem('exchangeRates', JSON.stringify(exchangeRates));
+            localStorage.setItem('ratesLastUpdate', lastRatesUpdate.toISOString());
+            
+            updateCurrencyInfo();
+            showNotification('Курсы валют успешно обновлены', 'success');
+        } else {
+            throw new Error(data.error?.info || 'Ошибка при получении курсов валют');
+        }
+    } catch (error) {
+        console.error('Ошибка при получении курсов валют:', error);
+        
+        // Если есть сохраненные курсы, используем их даже если они устарели
+        const savedRates = localStorage.getItem('exchangeRates');
+        const savedDate = localStorage.getItem('ratesLastUpdate');
+        
+        if (savedRates && savedDate) {
+            exchangeRates = JSON.parse(savedRates);
+            lastRatesUpdate = new Date(savedDate);
+            updateCurrencyInfo();
+            showNotification('Используются сохраненные курсы валют', 'info');
+        } else {
+            showNotification('Ошибка при получении курсов валют', 'error');
+        }
+    }
+}
+
+// Обновляем информацию о последнем обновлении курсов
+function updateCurrencyInfo() {
+    const dateElement = document.getElementById('lastUpdateDate');
+    if (lastRatesUpdate) {
+        dateElement.textContent = lastRatesUpdate.toLocaleDateString();
+    } else {
+        dateElement.textContent = 'Нет данных';
+    }
+}
+
+// Функция для конвертации суммы из USD в выбранную валюту
+function convertCurrency(amount, fromCurrency = 'USD', toCurrency = currentCurrency) {
+    if (fromCurrency === toCurrency) return amount;
+    
+    if (toCurrency === 'USD') {
+        // Конвертация из другой валюты в USD
+        const rate = exchangeRates[`USD${fromCurrency}`];
+        return rate ? amount / rate : amount;
+    } else {
+        // Конвертация из USD в другую валюту
+        const rate = exchangeRates[`USD${toCurrency}`];
+        return rate ? amount * rate : amount;
+    }
+}
+
+// Функция для получения символа валюты
+function getCurrencySymbol(currency) {
+    const symbols = {
+        'USD': '$',
+        'EUR': '€',
+        'GBP': '£',
+        'CAD': 'C$',
+        'PLN': 'zł',
+        'UAH': '₴',
+        'RUB': '₽',
+        'KZT': '₸'
+    };
+    
+    return symbols[currency] || currency;
+}
+
+// Функция для форматирования суммы в выбранной валюте
+function formatCurrency(amount, currency = currentCurrency) {
+    const symbol = getCurrencySymbol(currency);
+    return `${symbol}${amount.toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+    })}`;
+}
+
+// Функция для переключения валюты
+function changeCurrency(currency) {
+    if (currency === currentCurrency) return;
+    
+    currentCurrency = currency;
+    document.getElementById('currentCurrency').textContent = currency;
+    
+    // Обновляем активную валюту в выпадающем списке
+    const options = document.querySelectorAll('.currency-option');
+    options.forEach(option => {
+        if (option.dataset.currency === currency) {
+            option.classList.add('active');
+        } else {
+            option.classList.remove('active');
+        }
+    });
+    
+    // Закрываем выпадающий список
+    document.getElementById('currencyOptions').style.display = 'none';
+    
+    // Обновляем UI с новой валютой
+    updateUI();
+    
+    // Создаем эффект искр
+    createSparklesAround(document.querySelector('.currency-dropdown'), 15);
+    
+    // Показываем уведомление
+    showNotification(`Валюта изменена на ${currency}`, 'success');
+}
+
+// Функция для отображения/скрытия списка валют
+function toggleCurrencyOptions() {
+    const options = document.getElementById('currencyOptions');
+    options.style.display = options.style.display === 'block' ? 'none' : 'block';
+    
+    if (options.style.display === 'block') {
+        // Анимируем появление опций
+        const optionElements = document.querySelectorAll('.currency-option');
+        optionElements.forEach((option, index) => {
+            gsap.fromTo(option, 
+                { opacity: 0, y: -10 }, 
+                { opacity: 1, y: 0, duration: 0.2, delay: index * 0.05 }
+            );
+        });
+    }
+}
+
+// Закрываем выпадающий список при клике вне его
+document.addEventListener('click', function(event) {
+    const dropdown = document.querySelector('.currency-dropdown');
+    const options = document.getElementById('currencyOptions');
+    
+    if (!dropdown.contains(event.target) && options.style.display === 'block') {
+        options.style.display = 'none';
+    }
+});
 
 function initChart() {
     const ctx = document.getElementById('mainChart').getContext('2d');
@@ -1773,7 +2261,7 @@ function initChart() {
                     displayColors: false,
                     callbacks: {
                         label: function(context) {
-                            return `$${context.parsed.y.toLocaleString()}`;
+                            return formatCurrency(context.parsed.y);
                         }
                     },
                     animation: {
@@ -1803,7 +2291,7 @@ function initChart() {
                     },
                     ticks: { 
                         color: 'rgba(255, 255, 255, 0.5)',
-                        callback: value => '$' + value.toLocaleString(),
+                        callback: value => formatCurrency(value),
                         font: {
                             size: 10
                         }
@@ -1828,16 +2316,329 @@ function initChart() {
     });
 }
 
+function initMonthlyProfitChart() {
+    if (!document.getElementById('monthlyProfitChart')) return;
+    
+    const ctx = document.getElementById('monthlyProfitChart').getContext('2d');
+    
+    // Получаем данные по месяцам
+    const monthlyData = getMonthlyProfitData();
+    
+    // Создаем градиенты для положительных и отрицательных значений
+    const positiveGradient = ctx.createLinearGradient(0, 0, 0, 400);
+    positiveGradient.addColorStop(0, 'rgba(16, 185, 129, 0.7)');
+    positiveGradient.addColorStop(1, 'rgba(16, 185, 129, 0.1)');
+    
+    const negativeGradient = ctx.createLinearGradient(0, 0, 0, 400);
+    negativeGradient.addColorStop(0, 'rgba(239, 68, 68, 0.7)');
+    negativeGradient.addColorStop(1, 'rgba(239, 68, 68, 0.1)');
+    
+    monthlyProfitChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: monthlyData.labels,
+            datasets: [{
+                label: 'Прибыль по месяцам',
+                data: monthlyData.data,
+                backgroundColor: function(context) {
+                    const value = context.dataset.data[context.dataIndex];
+                    return value >= 0 ? positiveGradient : negativeGradient;
+                },
+                borderColor: function(context) {
+                    const value = context.dataset.data[context.dataIndex];
+                    return value >= 0 ? 'rgba(16, 185, 129, 1)' : 'rgba(239, 68, 68, 1)';
+                },
+                borderWidth: 1,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                    bodyColor: '#fff',
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    borderWidth: 1,
+                    padding: 12,
+                    displayColors: false,
+                    callbacks: {
+                        label: function(context) {
+                            return formatCurrency(context.parsed.y);
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { 
+                    grid: { 
+                        color: 'rgba(255, 255, 255, 0.05)',
+                        drawBorder: false
+                    },
+                    ticks: { 
+                        color: 'rgba(255, 255, 255, 0.5)',
+                        font: {
+                            size: 10
+                        }
+                    }
+                },
+                y: { 
+                    grid: { 
+                        color: 'rgba(255, 255, 255, 0.05)',
+                        drawBorder: false
+                    },
+                    ticks: { 
+                        color: 'rgba(255, 255, 255, 0.5)',
+                        callback: value => formatCurrency(value),
+                        font: {
+                            size: 10
+                        }
+                    }
+                }
+            },
+            animation: {
+                duration: 1500,
+                easing: 'easeOutQuart'
+            }
+        }
+    });
+}
+
+function getMonthlyProfitData() {
+    // Создаем объект для хранения данных по месяцам
+    const monthlyProfit = {};
+    const monthNames = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+    
+    // Обрабатываем все транзакции
+    transactions.forEach(t => {
+        const date = new Date(t.date);
+        const monthYear = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+        
+        if (!monthlyProfit[monthYear]) {
+            monthlyProfit[monthYear] = 0;
+        }
+        
+        const amount = convertCurrency(t.amount);
+        
+        if (t.type === 'income') {
+            monthlyProfit[monthYear] += amount;
+        } else {
+            monthlyProfit[monthYear] -= amount;
+        }
+    });
+    
+    // Сортируем месяцы хронологически
+    const sortedMonths = Object.keys(monthlyProfit).sort((a, b) => {
+        const [monthA, yearA] = a.split(' ');
+        const [monthB, yearB] = b.split(' ');
+        
+        if (yearA !== yearB) {
+            return parseInt(yearA) - parseInt(yearB);
+        }
+        
+        return monthNames.indexOf(monthA) - monthNames.indexOf(monthB);
+    });
+    
+    return {
+        labels: sortedMonths,
+        data: sortedMonths.map(month => monthlyProfit[month])
+    };
+}
+
+function updateTopDeals() {
+    // Получаем топ-5 прибыльных сделок
+    const profitableDeals = [...transactions]
+        .filter(t => t.type === 'income')
+        .sort((a, b) => convertCurrency(b.amount) - convertCurrency(a.amount))
+        .slice(0, 5);
+    
+    // Получаем топ-5 убыточных сделок
+    const lossDeals = [...transactions]
+        .filter(t => t.type === 'expense')
+        .sort((a, b) => convertCurrency(b.amount) - convertCurrency(a.amount))
+        .slice(0, 5);
+    
+    // Обновляем списки
+    const profitableList = document.getElementById('topProfitableDeals');
+    const lossList = document.getElementById('topLossDeals');
+    
+    if (profitableList) {
+        profitableList.innerHTML = profitableDeals.map(deal => `
+            <li class="transaction-rank-item">
+                <div class="transaction-rank-info">
+                    <span class="transaction-rank-name">${deal.description}</span>
+                    <span class="transaction-rank-date">${new Date(deal.date).toLocaleDateString()}</span>
+                </div>
+                <span class="transaction-rank-amount positive">+${formatCurrency(convertCurrency(deal.amount))}</span>
+            </li>
+        `).join('');
+        
+        // Если сделок меньше 5, добавляем пустые элементы
+        if (profitableDeals.length < 5) {
+            for (let i = profitableDeals.length; i < 5; i++) {
+                profitableList.innerHTML += `
+                    <li class="transaction-rank-item">
+                        <div class="transaction-rank-info">
+                            <span class="transaction-rank-name">Нет данных</span>
+                            <span class="transaction-rank-date">-</span>
+                        </div>
+                        <span class="transaction-rank-amount">-</span>
+                    </li>
+                `;
+            }
+        }
+    }
+    
+    if (lossList) {
+        lossList.innerHTML = lossDeals.map(deal => `
+            <li class="transaction-rank-item">
+                <div class="transaction-rank-info">
+                    <span class="transaction-rank-name">${deal.description}</span>
+                    <span class="transaction-rank-date">${new Date(deal.date).toLocaleDateString()}</span>
+                </div>
+                <span class="transaction-rank-amount negative">-${formatCurrency(convertCurrency(deal.amount))}</span>
+            </li>
+        `).join('');
+        
+        // Если сделок меньше 5, добавляем пустые элементы
+        if (lossDeals.length < 5) {
+            for (let i = lossDeals.length; i < 5; i++) {
+                lossList.innerHTML += `
+                    <li class="transaction-rank-item">
+                        <div class="transaction-rank-info">
+                            <span class="transaction-rank-name">Нет данных</span>
+                            <span class="transaction-rank-date">-</span>
+                        </div>
+                        <span class="transaction-rank-amount">-</span>
+                    </li>
+                `;
+            }
+        }
+    }
+}
+
+function updateBestWorstDays() {
+    // Группируем транзакции по дням
+    const dailyProfits = {};
+    
+    transactions.forEach(t => {
+        if (!dailyProfits[t.date]) {
+            dailyProfits[t.date] = 0;
+        }
+        
+        const amount = convertCurrency(t.amount);
+        
+        if (t.type === 'income') {
+            dailyProfits[t.date] += amount;
+        } else {
+            dailyProfits[t.date] -= amount;
+        }
+    });
+    
+    // Находим лучший и худший дни
+    let bestDay = { date: null, profit: -Infinity };
+    let worstDay = { date: null, profit: Infinity };
+    
+    Object.entries(dailyProfits).forEach(([date, profit]) => {
+        if (profit > bestDay.profit) {
+            bestDay = { date, profit };
+        }
+        
+        if (profit < worstDay.profit) {
+            worstDay = { date, profit };
+        }
+    });
+    
+    // Обновляем информацию
+    const bestDayInfo = document.getElementById('bestDayInfo');
+    const worstDayInfo = document.getElementById('worstDayInfo');
+    
+    if (bestDayInfo && bestDay.date) {
+        bestDayInfo.innerHTML = `
+            <span class="best-day-date">${new Date(bestDay.date).toLocaleDateString()}</span>
+            <span class="best-day-amount positive">+${formatCurrency(bestDay.profit)}</span>
+        `;
+    } else if (bestDayInfo) {
+        bestDayInfo.innerHTML = `
+            <span class="best-day-date">Нет данных</span>
+            <span class="best-day-amount">-</span>
+        `;
+    }
+    
+    if (worstDayInfo && worstDay.date) {
+        worstDayInfo.innerHTML = `
+            <span class="best-day-date">${new Date(worstDay.date).toLocaleDateString()}</span>
+            <span class="best-day-amount negative">-${formatCurrency(Math.abs(worstDay.profit))}</span>
+        `;
+    } else if (worstDayInfo) {
+        worstDayInfo.innerHTML = `
+            <span class="best-day-date">Нет данных</span>
+            <span class="best-day-amount">-</span>
+        `;
+    }
+    
+    // Рассчитываем средний дневной заработок
+    const averageDailyProfitElement = document.getElementById('averageDailyProfit');
+    if (averageDailyProfitElement) {
+        const days = Object.keys(dailyProfits).length;
+        const totalProfit = Object.values(dailyProfits).reduce((sum, profit) => sum + profit, 0);
+        const averageProfit = days > 0 ? totalProfit / days : 0;
+        
+        averageDailyProfitElement.textContent = formatCurrency(averageProfit);
+        averageDailyProfitElement.className = averageProfit >= 0 ? 'best-day-amount positive' : 'best-day-amount negative';
+    }
+}
+
+function showAdvancedStats() {
+    const advancedStats = document.getElementById('advancedStats');
+    if (advancedStats) {
+        advancedStats.style.display = 'block';
+        
+        // Инициализируем график, если он еще не создан
+        if (!monthlyProfitChart) {
+            initMonthlyProfitChart();
+        } else {
+            // Обновляем данные графика
+            const monthlyData = getMonthlyProfitData();
+            monthlyProfitChart.data.labels = monthlyData.labels;
+            monthlyProfitChart.data.datasets[0].data = monthlyData.data;
+            monthlyProfitChart.update();
+        }
+        
+        // Обновляем топ сделок
+        updateTopDeals();
+        
+        // Обновляем лучший/худший дни
+        updateBestWorstDays();
+        
+        // Анимируем появление
+        gsap.fromTo(advancedStats, 
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.7)" }
+        );
+        
+        // Создаем эффект искр
+        createSparklesAround(document.querySelector('.tab-buttons .btn-primary'), 10);
+    }
+}
+
 function updateBalance() {
     const filteredTransactions = filterTransactionsByPeriod(transactions, currentPeriod);
-    const balance = filteredTransactions.reduce((acc, t) => 
-        t.type === 'income' ? acc + t.amount : acc - t.amount, 0);
+    let balance = 0;
+    
+    filteredTransactions.forEach(t => {
+        const amount = convertCurrency(t.amount);
+        balance = t.type === 'income' ? balance + amount : balance - amount;
+    });
     
     // Animate the balance change
     const balanceElement = document.getElementById('totalBalance');
-    const currentBalance = parseFloat(balanceElement.textContent.replace(/[^0-9.-]+/g, '')) || 0;
+    const currentBalanceText = balanceElement.textContent;
+    const currentBalanceValue = parseFloat(currentBalanceText.replace(/[^0-9.-]+/g, '')) || 0;
     
-    animateValue(balanceElement, currentBalance, balance, 1000, '$');
+    animateValue(balanceElement, currentBalanceValue, balance, 1000, getCurrencySymbol(currentCurrency));
 }
 
 function animateValue(element, start, end, duration, prefix = '', suffix = '') {
@@ -1880,7 +2681,7 @@ function renderTransactions() {
             </div>
             <div class="transaction-actions">
                 <span class="transaction-amount ${t.type === 'income' ? 'amount-positive' : 'amount-negative'}">
-                    ${t.type === 'income' ? '+' : '-'}$${t.amount.toLocaleString()}
+                    ${t.type === 'income' ? '+' : '-'}${formatCurrency(convertCurrency(t.amount))}
                 </span>
                 <button onclick="editTransaction(${i})" class="btn btn-secondary btn-icon">
                     <ion-icon name="create-outline"></ion-icon>
@@ -1949,10 +2750,10 @@ function calculateProfit() {
 
     const resultHTML = `
         <p><strong>Тема:</strong> ${skinName}</p>
-        <p><strong>Цена покупки:</strong> $${buy.toFixed(2)}</p>
-        <p><strong>Цена продажи:</strong> $${sell.toFixed(2)}</p>
-        <p><strong>Комиссия:</strong> $${fee.toFixed(2)} (${percent}%)</p>
-        <p><strong>Прибыль:</strong> <span class="${profit >= 0 ? 'positive-balance' : 'negative-balance'}">$${profit.toFixed(2)}</span></p>
+        <p><strong>Цена покупки:</strong> ${formatCurrency(convertCurrency(buy))}</p>
+        <p><strong>Цена продажи:</strong> ${formatCurrency(convertCurrency(sell))}</p>
+        <p><strong>Комиссия:</strong> ${formatCurrency(convertCurrency(fee))} (${percent}%)</p>
+        <p><strong>Прибыль:</strong> <span class="${profit >= 0 ? 'positive-balance' : 'negative-balance'}">${formatCurrency(convertCurrency(profit))}</span></p>
     `;
     
     const resultElement = document.getElementById('calculationResult');
@@ -1996,7 +2797,7 @@ function addAdvancedTransaction() {
     const transaction = {
         type: lastCalculatedProfit >= 0 ? 'income' : 'expense',
         amount: Math.abs(lastCalculatedProfit),
-        description: `${skinName} (${lastCalculatedProfit >= 0 ? 'прибыль' : 'убыток'}: $${Math.abs(lastCalculatedProfit).toFixed(2)})`,
+        description: `${skinName} (${lastCalculatedProfit >= 0 ? 'прибыль' : 'убыток'}: ${formatCurrency(Math.abs(lastCalculatedProfit))})`,
         date: date,
         theme: skinName,
         buyPrice: buyPrice,
@@ -2068,7 +2869,7 @@ function importTransactions(e) {
                         }
                         currentTransaction.type = value;
                     } else if (key === 'Сумма') {
-                        currentTransaction.amount = parseFloat(value);
+                        currentTransaction.amount = Number.parseFloat(value);
                     } else if (key ==='Описание') {
                         currentTransaction.description = value;
                     } else if (key === 'Дата') {
@@ -2076,11 +2877,11 @@ function importTransactions(e) {
                     } else if (key === 'Тема') {
                         currentTransaction.theme = value;
                     } else if (key === 'Цена покупки') {
-                        currentTransaction.buyPrice = parseFloat(value) || null;
+                        currentTransaction.buyPrice = Number.parseFloat(value) || null;
                     } else if (key === 'Цена продажи') {
-                        currentTransaction.sellPrice = parseFloat(value) || null;
+                        currentTransaction.sellPrice = Number.parseFloat(value) || null;
                     } else if (key === 'Комиссия') {
-                        currentTransaction.commission = parseFloat(value) || null;
+                        currentTransaction.commission = Number.parseFloat(value) || null;
                     }
                 });
 
@@ -2130,13 +2931,17 @@ function showNotification(message, type = 'info') {
 
 function updateProfitLoss() {
     const filteredTransactions = filterTransactionsByPeriod(transactions, currentPeriod);
-    const income = filteredTransactions
-        .filter(t => t.type === 'income')
-        .reduce((acc, t) => acc + t.amount, 0);
+    let income = 0;
+    let expense = 0;
     
-    const expense = filteredTransactions
-        .filter(t => t.type === 'expense')
-        .reduce((acc, t) => acc + t.amount, 0);
+    filteredTransactions.forEach(t => {
+        const amount = convertCurrency(t.amount);
+        if (t.type === 'income') {
+            income += amount;
+        } else {
+            expense += amount;
+        }
+    });
     
     // Animate the income and expense changes
     const incomeElement = document.getElementById('totalIncome');
@@ -2145,8 +2950,8 @@ function updateProfitLoss() {
     const currentIncome = parseFloat(incomeElement.textContent.replace(/[^0-9.-]+/g, '')) || 0;
     const currentExpense = parseFloat(expenseElement.textContent.replace(/[^0-9.-]+/g, '')) || 0;
     
-    animateValue(incomeElement, currentIncome, income, 1000, '$');
-    animateValue(expenseElement, currentExpense, expense, 1000, '$');
+    animateValue(incomeElement, currentIncome, income, 1000, getCurrencySymbol(currentCurrency));
+    animateValue(expenseElement, currentExpense, expense, 1000, getCurrencySymbol(currentCurrency));
 }
 
 function editTransaction(index) {
@@ -2291,7 +3096,8 @@ function updateChart() {
     const data = [];
     
     filteredTransactions.forEach(t => {
-        balance = t.type === 'income' ? balance + t.amount : balance - t.amount;
+        const amount = convertCurrency(t.amount);
+        balance = t.type === 'income' ? balance + amount : balance - amount;
         labels.push(new Date(t.date).toLocaleDateString('ru-RU', { 
             month: 'short', 
             day: 'numeric' 
@@ -2396,7 +3202,7 @@ function filterTransactions() {
             </div>
             <div class="transaction-actions">
                 <span class="transaction-amount ${t.type === 'income' ? 'amount-positive' : 'amount-negative'}">
-                    ${t.type === 'income' ? '+' : '-'}$${t.amount.toLocaleString()}
+                    ${t.type === 'income' ? '+' : '-'}${formatCurrency(convertCurrency(t.amount))}
                 </span>
                 <button onclick="editTransaction(${transactions.indexOf(t)})" class="btn btn-secondary btn-icon">
                     <ion-icon name="create-outline"></ion-icon>
@@ -2524,7 +3330,7 @@ function toggleTheme() {
 
     if (currentTheme === 'light') {
         // Анимация от солнца к луне
-        tl.to("#sun, #sun-ray-1, #sun-ray-2, #sun-ray-3, #sun-ray-4, #sun-ray-5, #sun-ray-6, #sun-ray-7, #sun-ray-8", {duration: 0.3, opacity: 0})
+        tl.to("#sun, #sun-ray-1, #sun-ray-2, #sun-ray-3, #sun-ray-4, #sun-ray-5, #sun-ray-6, #sun-ray-7, #sun-ray  #sun-ray-1, #sun-ray-2, #sun-ray-3, #sun-ray-4, #sun-ray-5, #sun-ray-6, #sun-ray-7, #sun-ray-8", {duration: 0.3, opacity: 0})
           .to("#moon", {duration: 0.5, morphSVG: "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z", ease: "power2.inOut"}, "-=0.3");
     } else {
         // Анимация от луны к солнцу
@@ -2574,7 +3380,7 @@ function updateChartColors() {
                 grid: { color: isDarkTheme ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
                 ticks: { 
                     color: isDarkTheme ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)',
-                    callback: value => '$' + value.toLocaleString()
+                    callback: value => formatCurrency(value)
                 }
             }
         },
@@ -2593,6 +3399,16 @@ function updateChartColors() {
     chart.options.scales.y.ticks.color = newChartOptions.scales.y.ticks.color;
     chart.options.plugins.tooltip = newChartOptions.plugins.tooltip;
     chart.update();
+    
+    // Обновляем цвета месячного графика, если он существует
+    if (monthlyProfitChart) {
+        monthlyProfitChart.options.scales.x.grid.color = newChartOptions.scales.x.grid.color;
+        monthlyProfitChart.options.scales.x.ticks.color = newChartOptions.scales.x.ticks.color;
+        monthlyProfitChart.options.scales.y.grid.color = newChartOptions.scales.y.grid.color;
+        monthlyProfitChart.options.scales.y.ticks.color = newChartOptions.scales.y.ticks.color;
+        monthlyProfitChart.options.plugins.tooltip = newChartOptions.plugins.tooltip;
+        monthlyProfitChart.update();
+    }
 }
 
 function switchToCalendar() {
@@ -2704,12 +3520,14 @@ function renderCalendar() {
                    transactionDate.getFullYear() === currentDate.getFullYear();
         });
         
-        const dayTotal = currentDayTransactions.reduce((acc, t) => 
-            t.type === 'income' ? acc + t.amount : acc - t.amount, 0
-        );
+        let dayTotal = 0;
+        currentDayTransactions.forEach(t => {
+            const amount = convertCurrency(t.amount);
+            dayTotal = t.type === 'income' ? dayTotal + amount : dayTotal - amount;
+        });
         
         if (dayTotal !== 0) {
-            dayBalance.textContent = `${dayTotal > 0 ? '+' : ''}$${dayTotal.toFixed(2)}`;
+            dayBalance.textContent = `${dayTotal > 0 ? '+' : ''}${formatCurrency(dayTotal)}`;
             dayBalance.classList.add(dayTotal > 0 ? 'positive-balance' : 'negative-balance');
         }
         
@@ -2794,6 +3612,12 @@ function openStatsModal() {
     
     updateStats();
     
+    // Скрываем расширенную статистику при открытии
+    const advancedStats = document.getElementById('advancedStats');
+    if (advancedStats) {
+        advancedStats.style.display = 'none';
+    }
+    
     // Create sparkles effect
     createSparklesAround(document.querySelector('.btn-primary.btn-large'), 15);
 }
@@ -2836,19 +3660,19 @@ function updateStats() {
     const totalStats = calculateStats(transactions);
 
     // Анимируем обновление статистики
-    animateValue(document.getElementById('todayEarnings'), 0, todayStats.earnings, 1000, '$');
+    animateValue(document.getElementById('todayEarnings'), 0, todayStats.earnings, 1000, getCurrencySymbol(currentCurrency));
     document.getElementById('todayDeals').textContent = `${todayStats.deals} сделок`;
     
-    animateValue(document.getElementById('yesterdayEarnings'), 0, yesterdayStats.earnings, 1000, '$');
+    animateValue(document.getElementById('yesterdayEarnings'), 0, yesterdayStats.earnings, 1000, getCurrencySymbol(currentCurrency));
     document.getElementById('yesterdayDeals').textContent = `${yesterdayStats.deals} сделок`;
     
-    animateValue(document.getElementById('weekEarnings'), 0, weekStats.earnings, 1000, '$');
+    animateValue(document.getElementById('weekEarnings'), 0, weekStats.earnings, 1000, getCurrencySymbol(currentCurrency));
     document.getElementById('weekDeals').textContent = `${weekStats.deals} сделок`;
     
-    animateValue(document.getElementById('monthEarnings'), 0, monthStats.earnings, 1000, '$');
+    animateValue(document.getElementById('monthEarnings'), 0, monthStats.earnings, 1000, getCurrencySymbol(currentCurrency));
     document.getElementById('monthDeals').textContent = `${monthStats.deals} сделок`;
     
-    animateValue(document.getElementById('totalEarnings'), 0, totalStats.earnings, 1000, '$');
+    animateValue(document.getElementById('totalEarnings'), 0, totalStats.earnings, 1000, getCurrencySymbol(currentCurrency));
     document.getElementById('totalDeals').textContent = `${totalStats.deals} сделок`;
     
     // Добавляем классы для стилизации положительных/отрицательных значений
@@ -2860,8 +3684,18 @@ function updateStats() {
 }
 
 function calculateStats(transactions) {
-    const income = transactions.reduce((acc, t) => t.type === 'income' ? acc + t.amount : acc, 0);
-    const expense = transactions.reduce((acc, t) => t.type === 'expense' ? acc + t.amount : acc, 0);
+    let income = 0;
+    let expense = 0;
+    
+    transactions.forEach(t => {
+        const amount = convertCurrency(t.amount);
+        if (t.type === 'income') {
+            income += amount;
+        } else {
+            expense += amount;
+        }
+    });
+    
     const earnings = income - expense;
     const deals = transactions.length;
     return { earnings, deals };
@@ -2949,6 +3783,7 @@ function createStars() {
     }
 }
 
+// Запускаем обновление курсов валют при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
     // Устанавливаем текущую дату по умолчанию
     const today = new Date().toISOString().split('T')[0];
@@ -2957,7 +3792,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Инициализируем график и обновляем UI
     initChart();
-    updateUI();
+    
+    // Загружаем курсы валют
+    fetchExchangeRates().then(() => {
+        updateUI();
+    });
     
     // Создаем визуальные эффекты
     createParticles();
@@ -2966,7 +3805,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Скрываем левую кнопку переключения вида
     document.querySelector('.switch-view.left').style.display = 'none';
+    
+    // Устанавливаем интервал для обновления курсов валют (раз в день)
+    setInterval(fetchExchangeRates, 24 * 60 * 60 * 1000);
 });
 </script>
 </body>
-</html>
+
