@@ -1,6 +1,5 @@
-<!DOCTYPE
-html >
-  <html lang="ru">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -829,6 +828,37 @@ html >
     .nav-icon ion-icon {
         position: relative;
         z-index: 1;
+    }
+
+    /* Tooltip styles for nav icons */
+    .nav-icon-wrapper {
+        position: relative;
+    }
+
+    .nav-tooltip {
+        position: absolute;
+        top: 50%;
+        right: 100%;
+        transform: translateY(-50%);
+        background: var(--bg-card);
+        color: var(--text-primary);
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        white-space: nowrap;
+        margin-right: var(--spacing-md);
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition-normal);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-md);
+        pointer-events: none;
+        z-index: 101;
+    }
+
+    .nav-icon-wrapper:hover .nav-tooltip {
+        opacity: 1;
+        visibility: visible;
     }
 
     .theme-toggle {
@@ -1681,10 +1711,11 @@ html >
         color: white;
     }
 
+    /* Modified currency info to appear on the right side */
     .currency-info {
         position: absolute;
-        top: calc(100% + 10px);
-        left: 0;
+        top: 0;
+        left: 100%;
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: var(--radius-md);
@@ -1698,6 +1729,7 @@ html >
         transform: translateY(-10px);
         transition: opacity 0.3s ease, transform 0.3s ease;
         pointer-events: none;
+        margin-left: var(--spacing-md);
     }
 
     .currency-dropdown:hover + .currency-info,
@@ -1752,18 +1784,30 @@ html >
 </div>
 
 <div class="nav-bar">
-<div class="nav-icon" onclick="window.location.href='target.html'">
-    <ion-icon name="trophy-outline"></ion-icon>
-</div>
-<div class="nav-icon" onclick="window.location.href='library.html'">
-    <ion-icon name="library-outline"></ion-icon>
-</div>
-<div class="nav-icon" onclick="exportTransactions()">
-    <ion-icon name="swap-vertical-outline"></ion-icon>
-</div>
-<div class="nav-icon" onclick="document.getElementById('fileInput').click()">
-    <ion-icon name="cloud-upload-outline"></ion-icon>
-</div>
+    <div class="nav-icon-wrapper">
+        <div class="nav-icon" onclick="window.location.href='target.html'">
+            <ion-icon name="trophy-outline"></ion-icon>
+        </div>
+        <div class="nav-tooltip">Достижения</div>
+    </div>
+    <div class="nav-icon-wrapper">
+        <div class="nav-icon" onclick="window.location.href='library.html'">
+            <ion-icon name="library-outline"></ion-icon>
+        </div>
+        <div class="nav-tooltip">Статистика</div>
+    </div>
+    <div class="nav-icon-wrapper">
+        <div class="nav-icon" onclick="exportTransactions()">
+            <ion-icon name="swap-vertical-outline"></ion-icon>
+        </div>
+        <div class="nav-tooltip">Экспорт</div>
+    </div>
+    <div class="nav-icon-wrapper">
+        <div class="nav-icon" onclick="document.getElementById('fileInput').click()">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+        </div>
+        <div class="nav-tooltip">Импорт</div>
+    </div>
 </div>
 
 <div class="dashboard">
@@ -3822,4 +3866,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 </script>
 </body>
-
+</html>
