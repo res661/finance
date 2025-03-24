@@ -1898,6 +1898,7 @@ html >
                 <label for="profitPercentage">Комиссия</label>
                 <select id="profitPercentage" class="form-control">
                     <option value="2">2%</option>
+                    <option value="2.5">2.5%</option>
                     <option value="5">5%</option>
                     <option value="10">10%</option>
                     <option value="13">13%</option>
@@ -3809,6 +3810,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Устанавливаем интервал для обновления курсов валют (раз в день)
     setInterval(fetchExchangeRates, 24 * 60 * 60 * 1000);
 });
+</script>
+<input type="text" id="userData" placeholder="Введите данные">
+<button onclick="saveData()">Сохранить</button>
+
+<script>
+    function saveData() {
+        let data = document.getElementById("userData").value;
+        localStorage.setItem("userInput", data);
+        alert("Данные сохранены!");
+    }
 </script>
 </body>
 
