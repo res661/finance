@@ -3855,15 +3855,5 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(fetchExchangeRates, 24 * 60 * 60 * 1000);
 });
 </script>
-<input type="text" id="userData" placeholder="Введите данные">
-<button onclick="saveData()">Сохранить</button>
-
-<script>
-    function saveData() {
-        let data = document.getElementById("userData").value;
-        localStorage.setItem("userInput", data);
-        alert("Данные сохранены!");
-    }
-</script>
 </body>
 </html>
