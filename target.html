@@ -1227,7 +1227,7 @@ const achievements = [
         condition: (stats) => stats.totalProfit >= 500,
         progress: (stats) => Math.min(stats.totalProfit, 500),
         target: 500,
-        format: (value) => `$${value}/$500`,
+        format: (value) => `$${Math.round(value)}/$500`,
         transactionType: 'regular' // Тип транзакции: обычная
     },
     
@@ -1459,7 +1459,7 @@ const achievements = [
         condition: (stats) => stats.totalProfit >= 10000,
         progress: (stats) => Math.min(stats.totalProfit, 10000),
         target: 10000,
-        format: (value) => `$${value}/$10000`,
+        format: (value) => `$${Math.round(value)}/$10000`,
         transactionType: 'regular' // Тип транзакции: обычная
     },
     {
@@ -1882,11 +1882,14 @@ function getHeaderIndex(filter) {
     }
 }
 
-// Функция для форматирования валюты
+// Update the formatCurrency function to properly round numbers and avoid floating point issues
 function formatCurrency(amount) {
+    // Round to 2 decimal places to avoid floating point issues
+    amount = Math.round(amount * 100) / 100;
+    
     return `$${amount.toLocaleString(undefined, {
         minimumFractionDigits: 0,
-        maximumFractionDigits: 2
+        maximumFractionDigits: 0 // Changed from 2 to 0 to avoid showing cents
     })}`;
 }
 
