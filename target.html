@@ -1888,10 +1888,44 @@ function formatCurrency(amount) {
     amount = Math.round(amount * 100) / 100;
     
     return `$${amount.toLocaleString(undefined, {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0 // Changed from 2 to 0 to avoid showing cents
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2 // Always show 2 decimal places
     })}`;
 }
+
+// Update the format functions in the achievements that use currency values
+// For example, in the 'path-to-million' achievement:
+// Update the format functions in the achievements that use currency values
+// For example, in the 'path-to-million' achievement:
+achievements[38].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$10000`;
+
+// Similarly update all other currency-based achievement format functions:
+// For 'money-flow' achievement:
+achievements[19].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$500`;
+
+// For 'base-capital' achievement:
+achievements[8].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$50`;
+
+// For 'serious-amounts' achievement:
+achievements[13].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$250`;
+
+// For 'big-money' achievement:
+achievements[15].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$500`;
+
+// For 'high-roller' achievement:
+achievements[23].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$1000`;
+
+// For 'future-millionaire' achievement:
+achievements[28].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$2500`;
+
+// For 'trade-king' achievement:
+achievements[29].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$5000`;
+
+// For 'crazy-trade' achievement:
+achievements[34].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$5000`;
+
+// For 'golden-deal' achievement:
+achievements[37].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$1000`;
 
 // Функция для создания эффекта искр вокруг элемента
 function createSparklesAround(element, count = 10) {
