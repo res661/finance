@@ -947,11 +947,6 @@ small {
         <button class="filter-btn special" data-filter="special">Особые</button>
     </div>
 
-    <div class="achievements-header">
-        <h2>Лёгкие достижения</h2>
-        <p>Начните с малого и двигайтесь к большим целям</p>
-    </div>
-
     <div class="achievements-container" id="easy-achievements">
         <!-- Лёгкие достижения будут добавлены динамически -->
     </div>
@@ -1093,7 +1088,7 @@ const achievements = [
         condition: (stats) => stats.maxDealAmount >= 50,
         progress: (stats) => Math.min(stats.maxDealAmount, 50),
         target: 50,
-        format: (value) => `$${value}/$50`,
+        format: (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$50.00`,
         transactionType: 'extended' // Тип транзакции: расширенная
     },
     {
@@ -1143,7 +1138,7 @@ const achievements = [
         condition: (stats) => stats.maxDealAmount >= 250,
         progress: (stats) => Math.min(stats.maxDealAmount, 250),
         target: 250,
-        format: (value) => `$${value}/$250`,
+        format: (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$250.00`,
         transactionType: 'extended' // Тип транзакции: расширенная
     },
     {
@@ -1179,7 +1174,7 @@ const achievements = [
         condition: (stats) => stats.maxDealAmount >= 500,
         progress: (stats) => Math.min(stats.maxDealAmount, 500),
         target: 500,
-        format: (value) => `$${value}/$500`,
+        format: (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$500.00`,
         transactionType: 'extended' // Тип транзакции: расширенная
     },
     {
@@ -1191,7 +1186,7 @@ const achievements = [
         condition: (stats) => stats.maxLoss >= 50,
         progress: (stats) => Math.min(stats.maxLoss, 50),
         target: 50,
-        format: (value) => `$${value}/$50`,
+        format: (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$50.00`,
         transactionType: 'extended' // Тип транзакции: расширенная
     },
     {
@@ -1227,7 +1222,7 @@ const achievements = [
         condition: (stats) => stats.totalProfit >= 500,
         progress: (stats) => Math.min(stats.totalProfit, 500),
         target: 500,
-        format: (value) => `$${Math.round(value)}/$500`,
+        format: (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$500.00`,
         transactionType: 'regular' // Тип транзакции: обычная
     },
     
@@ -1253,7 +1248,7 @@ const achievements = [
         condition: (stats) => stats.maxProfitPercentage >= 100,
         progress: (stats) => Math.min(stats.maxProfitPercentage, 100),
         target: 100,
-        format: (value) => `${value}%/100%`,
+        format: (value) => `${(Math.round(value * 100) / 100).toFixed(2)}%/100.00%`,
         transactionType: 'extended' // Тип транзакции: расширенная
     },
     {
@@ -1265,7 +1260,7 @@ const achievements = [
         condition: (stats) => stats.maxDealAmount >= 1000,
         progress: (stats) => Math.min(stats.maxDealAmount, 1000),
         target: 1000,
-        format: (value) => `$${value}/$1000`,
+        format: (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$1000.00`,
         transactionType: 'extended' // Тип транзакции: расширенная
     },
     {
@@ -1337,7 +1332,7 @@ const achievements = [
         condition: (stats) => stats.maxDealAmount >= 2500,
         progress: (stats) => Math.min(stats.maxDealAmount, 2500),
         target: 2500,
-        format: (value) => `$${value}/$2500`,
+        format: (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$2500.00`,
         transactionType: 'extended' // Тип транзакции: расширенная
     },
     {
@@ -1349,7 +1344,7 @@ const achievements = [
         condition: (stats) => stats.totalProfit >= 5000,
         progress: (stats) => Math.min(stats.totalProfit, 5000),
         target: 5000,
-        format: (value) => `$${value}/$5000`,
+        format: (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$5000.00`,
         transactionType: 'regular' // Тип транзакции: обычная
     },
     
@@ -1375,7 +1370,7 @@ const achievements = [
         condition: (stats) => stats.maxProfitPercentage >= 500,
         progress: (stats) => Math.min(stats.maxProfitPercentage, 500),
         target: 500,
-        format: (value) => `${value}%/500%`,
+        format: (value) => `${(Math.round(value * 100) / 100).toFixed(2)}%/500.00%`,
         transactionType: 'extended' // Тип транзакции: расширенная
     },
     {
@@ -1399,7 +1394,7 @@ const achievements = [
         condition: (stats) => stats.maxDealAmount >= 5000,
         progress: (stats) => Math.min(stats.maxDealAmount, 5000),
         target: 5000,
-        format: (value) => `$${value}/$5000`,
+        format: (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$5000.00`,
         transactionType: 'extended' // Тип транзакции: расширенная
     },
     {
@@ -1447,7 +1442,7 @@ const achievements = [
         condition: (stats) => stats.maxProfitAmount >= 1000,
         progress: (stats) => Math.min(stats.maxProfitAmount, 1000),
         target: 1000,
-        format: (value) => `$${value}/$1000`,
+        format: (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$1000.00`,
         transactionType: 'extended' // Тип транзакции: расширенная
     },
     {
@@ -1459,7 +1454,7 @@ const achievements = [
         condition: (stats) => stats.totalProfit >= 10000,
         progress: (stats) => Math.min(stats.totalProfit, 10000),
         target: 10000,
-        format: (value) => `$${Math.round(value)}/$10000`,
+        format: (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$10000.00`,
         transactionType: 'regular' // Тип транзакции: обычная
     },
     {
@@ -1848,11 +1843,11 @@ function setupFilters() {
     });
 }
 
-// Функция для фильтрации достижений
+// Fix the filterAchievements function to correctly show/hide headers when filtering
 function filterAchievements(filter) {
     const headers = document.querySelectorAll('.achievements-header');
     const containers = document.querySelectorAll('.achievements-container');
-    
+
     if (filter === 'all') {
         // Показываем все категории
         headers.forEach(header => header.style.display = 'block');
@@ -1863,7 +1858,15 @@ function filterAchievements(filter) {
         containers.forEach(container => container.style.display = 'none');
         
         // Показываем только выбранную категорию
-        const selectedHeader = document.querySelector(`.achievements-header:nth-of-type(${getHeaderIndex(filter)})`);
+        // Find the header that corresponds to the selected category
+        const headerIndex = {
+            'easy': 1,
+            'medium': 2,
+            'hard': 3,
+            'special': 4
+        }[filter];
+        
+        const selectedHeader = document.querySelector(`.achievements-header:nth-of-type(${headerIndex})`);
         const selectedContainer = document.getElementById(`${filter}-achievements`);
         
         if (selectedHeader) selectedHeader.style.display = 'block';
@@ -1871,16 +1874,8 @@ function filterAchievements(filter) {
     }
 }
 
-// Функция для получения индекса заголовка категории
-function getHeaderIndex(filter) {
-    switch (filter) {
-        case 'easy': return 1;
-        case 'medium': return 2;
-        case 'hard': return 3;
-        case 'special': return 4;
-        default: return 1;
-    }
-}
+// Remove the getHeaderIndex function since we're now using a direct mapping
+// This function was causing the issue by always returning 1 for 'special'
 
 // Update the formatCurrency function to properly round numbers and avoid floating point issues
 function formatCurrency(amount) {
@@ -1892,40 +1887,6 @@ function formatCurrency(amount) {
         maximumFractionDigits: 2 // Always show 2 decimal places
     })}`;
 }
-
-// Update the format functions in the achievements that use currency values
-// For example, in the 'path-to-million' achievement:
-// Update the format functions in the achievements that use currency values
-// For example, in the 'path-to-million' achievement:
-achievements[38].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$10000`;
-
-// Similarly update all other currency-based achievement format functions:
-// For 'money-flow' achievement:
-achievements[19].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$500`;
-
-// For 'base-capital' achievement:
-achievements[8].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$50`;
-
-// For 'serious-amounts' achievement:
-achievements[13].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$250`;
-
-// For 'big-money' achievement:
-achievements[15].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$500`;
-
-// For 'high-roller' achievement:
-achievements[23].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$1000`;
-
-// For 'future-millionaire' achievement:
-achievements[28].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$2500`;
-
-// For 'trade-king' achievement:
-achievements[29].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$5000`;
-
-// For 'crazy-trade' achievement:
-achievements[34].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$5000`;
-
-// For 'golden-deal' achievement:
-achievements[37].format = (value) => `$${(Math.round(value * 100) / 100).toFixed(2)}/$1000`;
 
 // Функция для создания эффекта искр вокруг элемента
 function createSparklesAround(element, count = 10) {
@@ -2125,3 +2086,4 @@ document.addEventListener('DOMContentLoaded', initPage);
 </script>
 </body>
 </html>
+
